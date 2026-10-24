@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran - Struktur Data & Algoritma (Gabungan)</title>
+    <style>
+        /* ===== MAIN NAV STYLES ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            background: #1e293b;
+        }
+        .main-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #ec4899 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+            z-index: 1000;
+        }
+        .main-header h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .main-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .main-tab {
+            padding: 8px 16px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+        .main-tab:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        .main-tab.active {
+            background: white;
+            color: #4f46e5;
+            border-color: white;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+        .page-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            background: white;
+        }
+        .page {
+            position: absolute;
+            inset: 0;
+            display: none;
+        }
+        .page.active { display: block; }
+        .page iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        @media (max-width: 640px) {
+            .main-header { padding: 10px 14px; }
+            .main-header h1 { font-size: 0.95rem; }
+            .main-tab { padding: 6px 12px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MAIN NAVBAR ===== -->
+    <header class="main-header">
+        <h1>🎓 Struktur Data & Algoritma · Kelas 10 SMK</h1>
+        <nav class="main-tabs" role="tablist">
+            <button class="main-tab active" data-page="game" role="tab">🎮 Media Pembelajaran</button>
+            <button class="main-tab" data-page="lkpd" role="tab">📝 LKPD</button>
+            <button class="main-tab" data-page="quiz" role="tab">✅ Kuis</button>
+        </nav>
+    </header>
+
+    <!-- ===== PAGE CONTAINERS ===== -->
+    <main class="page-container">
+        <div class="page active" id="page-game">
+            <iframe id="iframe-game" title="Media Pembelajaran"></iframe>
+        </div>
+        <div class="page" id="page-lkpd">
+            <iframe id="iframe-lkpd" title="LKPD"></iframe>
+        </div>
+        <div class="page" id="page-quiz">
+            <iframe id="iframe-quiz" title="Kuis"></iframe>
+        </div>
+    </main>
+
+    <!-- =============================================================
+         TEMPLATE 1: MEDIA PEMBELAJARAN (Game Interaktif)
+         ============================================================= -->
+    <template id="tpl-game">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Data & Algoritma - Game Interaktif untuk Kelas 10 SMK</title>
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --primary: #4f46e5;
+            --array: #3b82f6;
+            --stack: #f97316;
+            --queue: #10b981;
+            --list: #8b5cf6;
+            --linear: #ef4444;
+            --binary: #6366f1;
+            --bubble: #ec4899;
+            --selection: #eab308;
+            --text: #1e293b;
+            --sub: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            --radius: 18px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e8eef5 0%, #f0f4f8 30%, #fdf2f8 70%, #fefce8 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 18px 30px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .header .subtitle {
+            font-size: 0.85rem;
+            color: var(--sub);
+            margin-top: 2px;
+        }
+
+        /* NAV TABS */
+        .nav-container {
+            max-width: 1100px;
+            margin: 20px auto 0;
+            padding: 0 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .nav-tab {
+            padding: 10px 16px;
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            color: var(--text);
+        }
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            border-color: #c4b5fd;
+        }
+        .nav-tab.active {
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .nav-tab.array-tab.active { background: var(--array); }
+        .nav-tab.stack-tab.active { background: var(--stack); }
+        .nav-tab.queue-tab.active { background: var(--queue); }
+        .nav-tab.list-tab.active { background: var(--list); }
+        .nav-tab.linear-tab.active { background: var(--linear); }
+        .nav-tab.binary-tab.active { background: var(--binary); }
+        .nav-tab.bubble-tab.active { background: var(--bubble); }
+        .nav-tab.selection-tab.active { background: var(--selection); color: #1e293b; }
+        .nav-tab .emoji { font-size: 1.2rem; }
+
+        /* MAIN CONTENT */
+        .main-container {
+            max-width: 1000px;
+            margin: 24px auto 60px;
+            padding: 0 16px;
+        }
+        .section { display: none; animation: fadeSlideIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 28px 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card .desc {
+            color: var(--sub);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .card .rule-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .badge-lifo { background: #fff7ed; color: #ea580c; }
+        .badge-fifo { background: #ecfdf5; color: #059669; }
+        .badge-info { background: #eff6ff; color: #2563eb; }
+
+        /* GAME AREA */
+        .game-area {
+            background: #fafbfc;
+            border-radius: 14px;
+            padding: 20px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            border: 2px dashed #e2e8f0;
+            position: relative;
+        }
+        .game-area.compact { min-height: 120px; padding: 14px; }
+
+        /* ARRAY - Rak Sepatu */
+        .rak-sepatu { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: flex-end; }
+        .slot-sepatu {
+            width: 90px; height: 110px;
+            border: 3px solid #cbd5e1;
+            border-radius: 12px 12px 6px 6px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            cursor: pointer; transition: var(--transition);
+            background: #f8fafc; position: relative; overflow: hidden;
+            font-weight: 600; font-size: 0.8rem; padding-bottom: 8px;
+        }
+        .slot-sepatu:hover { border-color: var(--array); box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2); transform: translateY(-4px); }
+        .slot-sepatu.filled { background: #dbeafe; border-color: var(--array); border-style: solid; }
+        .slot-sepatu .slot-index { position: absolute; top: 6px; left: 10px; font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
+        .slot-sepatu .sepatu-emoji { font-size: 2.4rem; transition: var(--transition); margin-bottom: 2px; }
+        .slot-sepatu .sepatu-nama { font-size: 0.7rem; color: #475569; }
+        .slot-sepatu.filled .sepatu-emoji { animation: bounceIn 0.5s ease; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* STACK - Tumpukan Piring */
+        .tumpukan-piring {
+            display: flex; flex-direction: column-reverse; align-items: center;
+            gap: 0; min-height: 200px; justify-content: flex-start; position: relative;
+        }
+        .piring {
+            width: 100px; height: 40px;
+            background: linear-gradient(180deg, #fff 0%, #fef3c7 40%, #fde68a 100%);
+            border: 3px solid #f59e0b; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: #92400e;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative; z-index: 1;
+        }
+        .piring.entering { animation: dropIn 0.4s ease forwards; }
+        .piring.leaving { animation: popOut 0.35s ease forwards; }
+        @keyframes dropIn { from { transform: translateY(-60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes popOut { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-60px); opacity: 0; } }
+        .meja-stack { width: 160px; height: 12px; background: #78716c; border-radius: 6px; margin-top: 2px; }
+
+        /* QUEUE - Antrian */
+        .antrian-area {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+            min-height: 80px; padding: 10px; background: #f0fdf4; border-radius: 12px;
+            width: 100%; position: relative;
+        }
+        .orang-antri {
+            width: 55px; height: 65px;
+            background: #d1fae5; border: 2px solid #10b981; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; transition: all 0.4s ease; position: relative; font-weight: 700;
+        }
+        .orang-antri.entering { animation: slideInRight 0.4s ease forwards; }
+        .orang-antri.leaving { animation: slideOutLeft 0.4s ease forwards; }
+        @keyframes slideInRight { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-60px); opacity: 0; } }
+        .kasir-marker { font-size: 1.5rem; padding: 6px 14px; background: #fef3c7; border-radius: 20px; font-weight: 700; border: 2px solid #f59e0b; white-space: nowrap; }
+
+        /* LIST - Daftar Belanja */
+        .list-belanja { list-style: none; width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 8px; }
+        .list-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #f5f3ff; border: 2px solid #c4b5fd; border-radius: 10px;
+            padding: 10px 16px; transition: var(--transition); font-weight: 500;
+            cursor: default; animation: fadeSlideIn 0.3s ease;
+        }
+        .list-item:hover { background: #ede9fe; }
+        .list-item .item-num { font-weight: 700; color: var(--list); margin-right: 8px; }
+        .list-item .hapus-btn {
+            background: #fee2e2; border: none; color: #dc2626; cursor: pointer;
+            border-radius: 50%; width: 28px; height: 28px;
+            font-weight: 700; font-size: 0.9rem; transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .list-item .hapus-btn:hover { background: #fecaca; transform: scale(1.1); }
+
+        /* LINEAR SEARCH */
+        .tas-area { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 10px; }
+        .barang-tas {
+            width: 75px; height: 75px; border-radius: 14px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 3px solid #e2e8f0; background: #f8fafc;
+            transition: all 0.4s ease; cursor: default;
+            font-weight: 600; font-size: 0.7rem; text-align: center;
+        }
+        .barang-tas.checking { border-color: #f59e0b; background: #fffbeb; animation: shake 0.5s ease; box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.25); }
+        .barang-tas.found { border-color: #10b981; background: #d1fae5; box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.3); animation: bounceIn 0.5s ease; }
+        .barang-tas.discarded { opacity: 0.35; border-style: dashed; transform: scale(0.9); }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* BINARY SEARCH */
+        .binary-array { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+        .binary-cell {
+            width: 48px; height: 48px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem;
+            border: 2px solid #e2e8f0; background: #f8fafc;
+            transition: all 0.35s ease;
+        }
+        .binary-cell.in-range { background: #eff6ff; border-color: #93c5fd; }
+        .binary-cell.mid { background: #fef3c7; border-color: #f59e0b; box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.3); animation: pulse 0.7s ease infinite; font-size: 1rem; }
+        .binary-cell.out-range { opacity: 0.25; }
+        .binary-cell.found-cell { background: #d1fae5; border-color: #10b981; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.3); animation: bounceIn 0.5s ease; }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 0 14px rgba(245, 158, 11, 0.05); }
+        }
+
+        /* SORTING */
+        .sort-bars { display: flex; gap: 8px; align-items: flex-end; justify-content: center; height: 200px; padding: 10px; }
+        .sort-bar {
+            width: 55px; border-radius: 10px 10px 4px 4px;
+            display: flex; align-items: flex-end; justify-content: center;
+            padding-bottom: 8px; font-weight: 700; color: white; font-size: 0.9rem;
+            transition: all 0.4s ease; cursor: default;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .sort-bar.comparing { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.5); transform: translateY(-10px); z-index: 2; }
+        .sort-bar.swapping { animation: swapBounce 0.5s ease; }
+        .sort-bar.sorted { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.4); border: 2px solid #10b981; }
+        @keyframes swapBounce {
+            0%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-20px); }
+            60% { transform: translateY(-6px); }
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 20px; border-radius: 25px; border: none; cursor: pointer;
+            font-weight: 600; font-size: 0.9rem; transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: white; border: 2px solid #cbd5e1; color: #475569; }
+        .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 20px; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-array { background: var(--array); color: white; }
+        .btn-stack { background: var(--stack); color: white; }
+        .btn-queue { background: var(--queue); color: white; }
+        .btn-list { background: var(--list); color: white; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .input-sm {
+            padding: 8px 14px; border-radius: 20px; border: 2px solid #e2e8f0;
+            font-family: inherit; font-size: 0.85rem; width: 140px;
+            text-align: center; transition: var(--transition);
+        }
+        .input-sm:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+
+        /* STATUS */
+        .status-msg {
+            font-weight: 600; font-size: 0.9rem;
+            padding: 8px 16px; border-radius: 20px; text-align: center;
+            min-height: 36px; display: flex; align-items: center; gap: 6px;
+        }
+        .status-msg.success { background: #ecfdf5; color: #059669; }
+        .status-msg.info { background: #eff6ff; color: #2563eb; }
+        .status-msg.warning { background: #fffbeb; color: #d97706; }
+
+        /* TOOLTIP */
+        .info-pop { position: relative; cursor: help; }
+        .info-pop:hover::after {
+            content: attr(data-tip); position: absolute; bottom: 120%; left: 50%;
+            transform: translateX(-50%); background: #1e293b; color: #fff;
+            padding: 6px 12px; border-radius: 8px; font-size: 0.75rem;
+            white-space: nowrap; z-index: 10; pointer-events: none;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.2rem; }
+            .nav-tab { font-size: 0.75rem; padding: 8px 11px; border-radius: 22px; }
+            .card { padding: 16px; }
+            .sort-bar { width: 38px; font-size: 0.7rem; }
+            .sort-bars { height: 140px; gap: 4px; }
+            .slot-sepatu { width: 60px; height: 80px; font-size: 0.65rem; }
+            .slot-sepatu .sepatu-emoji { font-size: 1.6rem; }
+            .binary-cell { width: 34px; height: 34px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎮 Struktur Data & Algoritma</h1>
+        <div class="subtitle">Game Interaktif untuk Kelas 10 SMK · Paham dari Nol!</div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="nav-container" id="navContainer">
+        <button class="nav-tab array-tab active" data-section="array"><span class="emoji">👟</span> Array</button>
+        <button class="nav-tab stack-tab" data-section="stack"><span class="emoji">🍽️</span> Stack</button>
+        <button class="nav-tab queue-tab" data-section="queue"><span class="emoji">🧑‍🤝‍🧑</span> Queue</button>
+        <button class="nav-tab list-tab" data-section="list"><span class="emoji">📋</span> List</button>
+        <button class="nav-tab linear-tab" data-section="linear"><span class="emoji">🔍</span> Linear Search</button>
+        <button class="nav-tab binary-tab" data-section="binary"><span class="emoji">📖</span> Binary Search</button>
+        <button class="nav-tab bubble-tab" data-section="bubble"><span class="emoji">🫧</span> Bubble Sort</button>
+        <button class="nav-tab selection-tab" data-section="selection"><span class="emoji">🃏</span> Selection Sort</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+
+        <!-- ==================== ARRAY ==================== -->
+        <div class="section active" id="section-array">
+            <div class="card">
+                <h3>👟 Array — Rak Sepatu Bernomor</h3>
+                <p class="desc">Array adalah kumpulan data <strong>berurutan</strong> dengan <strong>indeks mulai dari 0</strong>. Jumlah slot-nya <strong>tetap (fixed)</strong>. Seperti rak sepatu: kamu langsung tahu sepatu ada di slot nomor berapa!</p>
+                <span class="rule-badge badge-info">🔢 Indeks: 0, 1, 2, 3, 4</span>
+                <div class="game-area" id="arrayGame">
+                    <div class="rak-sepatu" id="rakSepatu"></div>
+                    <div class="status-msg info" id="arrayStatus">👆 Klik slot kosong untuk menaruh sepatu, klik slot terisi untuk mengambilnya.</div>
+                    <div class="btn-group">
+                        <button class="btn btn-array btn-sm" onclick="isiSemuaSlot()">📥 Isi Semua Slot</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetArray()">🔄 Kosongkan Rak</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STACK ==================== -->
+        <div class="section" id="section-stack">
+            <div class="card">
+                <h3>🍽️ Stack — Tumpukan Piring (LIFO)</h3>
+                <p class="desc"><strong>Last In, First Out.</strong> Piring yang <strong>terakhir ditumpuk</strong> akan <strong>pertama diambil</strong>. Bayangkan tumpukan piring di kantin — piring paling atas selalu diambil duluan!</p>
+                <span class="rule-badge badge-lifo">📌 LIFO — Last In First Out</span>
+                <div class="game-area" id="stackGame">
+                    <div class="tumpukan-piring" id="tumpukanPiring"></div>
+                    <div class="meja-stack"></div>
+                    <div class="status-msg info" id="stackStatus">🍽️ Klik PUSH untuk menambah piring, POP untuk mengambil piring paling atas.</div>
+                    <div class="btn-group">
+                        <button class="btn btn-stack" onclick="pushPiring()">⬆️ PUSH (Tambah Piring)</button>
+                        <button class="btn btn-outline" onclick="popPiring()">⬇️ POP (Ambil Piring Atas)</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetStack()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== QUEUE ==================== -->
+        <div class="section" id="section-queue">
+            <div class="card">
+                <h3>🧑‍🤝‍🧑 Queue — Antrian Kasir (FIFO)</h3>
+                <p class="desc"><strong>First In, First Out.</strong> Orang yang <strong>datang pertama</strong> akan <strong>dilayani pertama</strong>. Seperti antrian di Indomaret — tidak boleh nyerobot!</p>
+                <span class="rule-badge badge-fifo">📌 FIFO — First In First Out</span>
+                <div class="game-area" id="queueGame">
+                    <div style="display:flex;align-items:center;gap:12px;width:100%;justify-content:center;flex-wrap:wrap;">
+                        <span class="kasir-marker">🛒 Kasir</span>
+                        <div class="antrian-area" id="antrianArea"></div>
+                    </div>
+                    <div class="status-msg info" id="queueStatus">🚶 Orang datang = ENQUEUE (masuk belakang), dilayani = DEQUEUE (depan keluar).</div>
+                    <div class="btn-group">
+                        <button class="btn btn-queue" onclick="enqueueOrang()">➕ ENQUEUE (Orang Datang)</button>
+                        <button class="btn btn-outline" onclick="dequeueOrang()">✅ DEQUEUE (Layani Depan)</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetQueue()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== LIST ==================== -->
+        <div class="section" id="section-list">
+            <div class="card">
+                <h3>📋 List — Daftar Belanja Fleksibel</h3>
+                <p class="desc">List itu seperti Array tapi <strong>ukurannya bisa berubah</strong>. Kamu bebas <strong>menambah, menyisipkan, atau menghapus</strong> data di posisi mana saja!</p>
+                <span class="rule-badge badge-info">✨ Fleksibel — Bisa bertambah, menyusut, disisipkan</span>
+                <div class="game-area" id="listGame">
+                    <ul class="list-belanja" id="listBelanja"></ul>
+                    <div class="status-msg info" id="listStatus">📝 Tambahkan item ke daftar belanja, klik ❌ untuk menghapus.</div>
+                    <div class="btn-group" style="flex-wrap:wrap;">
+                        <input type="text" class="input-sm" id="listInput" placeholder="Nama item..." maxlength="20">
+                        <button class="btn btn-list btn-sm" onclick="tambahItemList('akhir')">➕ Tambah di Akhir</button>
+                        <input type="number" class="input-sm" id="listPosInput" placeholder="Posisi (1,2...)" min="1" style="width:100px;">
+                        <button class="btn btn-outline btn-sm" onclick="tambahItemList('sisip')">📌 Sisipkan di Posisi</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetList()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== LINEAR SEARCH ==================== -->
+        <div class="section" id="section-linear">
+            <div class="card">
+                <h3>🔍 Linear Search — Cari Satu per Satu</h3>
+                <p class="desc">Cara paling sederhana: <strong>cek satu per satu</strong> dari awal sampai ketemu. Data <strong>tidak perlu diurutkan</strong>. Seperti mencari kunci motor di tas ransel yang gelap — keluarkan barang satu per satu!</p>
+                <span class="rule-badge badge-info">🎯 Target: Kunci Motor 🔑</span>
+                <div class="game-area" id="linearGame">
+                    <div class="tas-area" id="tasArea"></div>
+                    <div class="status-msg info" id="linearStatus">🔍 Klik "Cari Satu per Satu" untuk mulai mencari Kunci Motor di dalam tas.</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="btnLinearStep" onclick="linearSearchStep()">👆 Cari Satu per Satu (Step)</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetLinearSearch()">🔄 Acak Ulang Tas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BINARY SEARCH ==================== -->
+        <div class="section" id="section-binary">
+            <div class="card">
+                <h3>📖 Binary Search — Cari Bagi Dua</h3>
+                <p class="desc"><strong>Syarat: Data HARUS terurut!</strong> Caranya dengan <strong>membagi dua</strong> data terus-menerus, lalu membuang setengah yang tidak mungkin. Seperti mencari kata di kamus tebal — buka tengah, lihat hurufnya, buang setengah!</p>
+                <span class="rule-badge badge-info">⚠️ Syarat Mutlak: Data harus terurut (kecil → besar)</span>
+                <div class="game-area" id="binaryGame">
+                    <div class="binary-array" id="binaryArray"></div>
+                    <div class="status-msg info" id="binaryStatus">🎯 Pilih angka target lalu klik "Langkah Binary Search" untuk mencari.</div>
+                    <div class="btn-group">
+                        <input type="number" class="input-sm" id="binaryTarget" placeholder="Target (1-31)" min="1" max="31">
+                        <button class="btn btn-primary btn-sm" onclick="initBinarySearch()">🎯 Set Target & Cari</button>
+                        <button class="btn btn-outline btn-sm" id="btnBinaryStep" onclick="binarySearchStep()" disabled>📖 Langkah Berikutnya</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetBinarySearch()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BUBBLE SORT ==================== -->
+        <div class="section" id="section-bubble">
+            <div class="card">
+                <h3>🫧 Bubble Sort — Pengurutan Gelembung</h3>
+                <p class="desc">Bandingkan <strong>dua data bersebelahan</strong>, jika urutannya salah → <strong>tukar</strong>. Nilai terbesar akan <strong>"menggelembung"</strong> ke posisi paling akhir. Ulangi sampai semua terurut!</p>
+                <span class="rule-badge badge-info">🫧 Nilai terbesar naik seperti gelembung ke permukaan</span>
+                <div class="game-area" id="bubbleGame">
+                    <div class="sort-bars" id="bubbleBars"></div>
+                    <div class="status-msg info" id="bubbleStatus">🫧 Klik "Langkah" untuk melihat proses Bubble Sort. Bandingkan tetangga, tukar jika perlu!</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm" id="btnBubbleStep" onclick="bubbleSortStep()">👆 Langkah Berikutnya</button>
+                        <button class="btn btn-outline btn-sm" id="btnBubbleAuto" onclick="bubbleSortAuto()">▶️ Auto Play</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetBubbleSort()">🔄 Acak Ulang</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SELECTION SORT ==================== -->
+        <div class="section" id="section-selection">
+            <div class="card">
+                <h3>🃏 Selection Sort — Pengurutan Pilih Langsung</h3>
+                <p class="desc">Cari <strong>nilai terkecil</strong> di antara data yang tersisa, lalu <strong>taruh di posisi paling depan</strong> dari sisa tersebut. Lebih hemat langkah karena langsung memilih yang terkecil!</p>
+                <span class="rule-badge badge-info">🎯 Cari terkecil → taruh di depan → ulangi</span>
+                <div class="game-area" id="selectionGame">
+                    <div class="sort-bars" id="selectionBars"></div>
+                    <div class="status-msg info" id="selectionStatus">🃏 Klik "Langkah" untuk melihat proses Selection Sort. Cari yang terkecil, taruh di depan!</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm" id="btnSelectionStep" onclick="selectionSortStep()">👆 Langkah Berikutnya</button>
+                        <button class="btn btn-outline btn-sm" id="btnSelectionAuto" onclick="selectionSortAuto()">▶️ Auto Play</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetSelectionSort()">🔄 Acak Ulang</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==================== NAVIGATION ====================
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const sectionId = tab.getAttribute('data-section');
+                navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + sectionId).classList.add('active');
+                if (sectionId === 'array') renderArray();
+                if (sectionId === 'stack') renderStack();
+                if (sectionId === 'queue') renderQueue();
+                if (sectionId === 'list') renderList();
+                if (sectionId === 'linear') renderLinearSearch();
+                if (sectionId === 'binary') renderBinarySearch();
+                if (sectionId === 'bubble') renderBubbleSort();
+                if (sectionId === 'selection') renderSelectionSort();
+            });
+        });
+
+        // ==================== ARRAY GAME ====================
+        const sepatuOptions = [
+            { emoji: '👟', nama: 'Kets' },
+            { emoji: '👞', nama: 'Sekolah' },
+            { emoji: '🩴', nama: 'Sandal' },
+            { emoji: '⚽', nama: 'Futsal' },
+            { emoji: '🥾', nama: 'Gunung' },
+            { emoji: '👠', nama: 'Hak Tinggi' },
+            { emoji: '🩰', nama: 'Balet' },
+            { emoji: '👢', nama: 'Boot' },
+        ];
+        let arraySlots = [null, null, null, null, null];
+
+        function renderArray() {
+            const rak = document.getElementById('rakSepatu');
+            rak.innerHTML = '';
+            arraySlots.forEach((isi, idx) => {
+                const slot = document.createElement('div');
+                slot.className = 'slot-sepatu' + (isi !== null ? ' filled' : '');
+                slot.innerHTML = `
+                    <span class="slot-index">[${idx}]</span>
+                    <span class="sepatu-emoji">${isi ? isi.emoji : '❓'}</span>
+                    <span class="sepatu-nama">${isi ? isi.nama : 'Kosong'}</span>
+                `;
+                slot.addEventListener('click', () => handleSlotClick(idx));
+                rak.appendChild(slot);
+            });
+            updateArrayStatus();
+        }
+
+        function handleSlotClick(idx) {
+            if (arraySlots[idx] !== null) {
+                const diambil = arraySlots[idx];
+                arraySlots[idx] = null;
+                document.getElementById('arrayStatus').textContent =
+                    `📤 Mengambil "${diambil.nama}" dari slot [${idx}]. Slot jadi kosong.`;
+                document.getElementById('arrayStatus').className = 'status-msg warning';
+            } else {
+                const randomSepatu = sepatuOptions[Math.floor(Math.random() * sepatuOptions.length)];
+                const sudahAda = arraySlots.some(s => s && s.nama === randomSepatu.nama);
+                const pilihan = sudahAda ?
+                    sepatuOptions.find(s => !arraySlots.some(as => as && as.nama === s.nama)) || randomSepatu :
+                    randomSepatu;
+                arraySlots[idx] = pilihan;
+                document.getElementById('arrayStatus').textContent =
+                    `📥 Menaruh "${pilihan.nama}" ${pilihan.emoji} di slot [${idx}]. Indeks ke-${idx}.`;
+                document.getElementById('arrayStatus').className = 'status-msg success';
+            }
+            renderArray();
+        }
+
+        function updateArrayStatus() {
+            const terisi = arraySlots.filter(s => s !== null).length;
+            if (terisi === 0) {
+                document.getElementById('arrayStatus').textContent =
+                '👆 Klik slot kosong untuk menaruh sepatu, klik slot terisi untuk mengambilnya.';
+                document.getElementById('arrayStatus').className = 'status-msg info';
+            }
+        }
+
+        function isiSemuaSlot() {
+            const available = [...sepatuOptions];
+            for (let i = 0; i < 5; i++) {
+                if (arraySlots[i] === null) {
+                    const pick = available.find(s => !arraySlots.some(as => as && as.nama === s.nama));
+                    if (pick) {
+                        arraySlots[i] = pick;
+                    } else {
+                        arraySlots[i] = available[i % available.length];
+                    }
+                }
+            }
+            document.getElementById('arrayStatus').textContent = '✅ Semua slot terisi! Coba klik slot untuk mengambil sepatu.';
+            document.getElementById('arrayStatus').className = 'status-msg success';
+            renderArray();
+        }
+
+        function resetArray() {
+            arraySlots = [null, null, null, null, null];
+            document.getElementById('arrayStatus').textContent =
+            '🔄 Rak dikosongkan. Klik slot untuk menaruh sepatu.';
+            document.getElementById('arrayStatus').className = 'status-msg info';
+            renderArray();
+        }
+
+        // ==================== STACK GAME ====================
+        let stackData = [];
+        let stackCounter = 1;
+
+        function renderStack() {
+            const container = document.getElementById('tumpukanPiring');
+            container.innerHTML = '';
+            stackData.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = 'piring';
+                div.textContent = '🍽️ ' + p;
+                div.style.marginBottom = '-8px';
+                container.appendChild(div);
+            });
+            document.getElementById('stackStatus').textContent =
+                stackData.length === 0 ?
+                '🍽️ Tumpukan kosong. Klik PUSH untuk menambah piring.' :
+                `📌 Piring paling atas: #${stackData[stackData.length-1]}. Ada ${stackData.length} piring di tumpukan.`;
+            document.getElementById('stackStatus').className = stackData.length === 0 ? 'status-msg info' :
+                'status-msg success';
+        }
+
+        function pushPiring() {
+            const newPiring = stackCounter++;
+            stackData.push(newPiring);
+            renderStack();
+            const container = document.getElementById('tumpukanPiring');
+            const lastChild = container.lastElementChild;
+            if (lastChild) {
+                lastChild.classList.add('entering');
+                setTimeout(() => lastChild.classList.remove('entering'), 400);
+            }
+            document.getElementById('stackStatus').textContent =
+                `⬆️ PUSH: Piring #${newPiring} ditaruh di ATAS tumpukan. (LIFO!)`;
+            document.getElementById('stackStatus').className = 'status-msg success';
+        }
+
+        function popPiring() {
+            if (stackData.length === 0) {
+                document.getElementById('stackStatus').textContent = '⚠️ Tumpukan kosong! Tidak ada piring yang bisa diambil.';
+                document.getElementById('stackStatus').className = 'status-msg warning';
+                return;
+            }
+            const container = document.getElementById('tumpukanPiring');
+            const lastChild = container.lastElementChild;
+            if (lastChild) {
+                lastChild.classList.add('leaving');
+            }
+            const diambil = stackData.pop();
+            setTimeout(() => {
+                renderStack();
+                document.getElementById('stackStatus').textContent =
+                    `⬇️ POP: Piring #${diambil} diambil dari ATAS. (Yang terakhir masuk, pertama keluar!)`;
+                document.getElementById('stackStatus').className = 'status-msg warning';
+            }, 350);
+        }
+
+        function resetStack() {
+            stackData = [];
+            stackCounter = 1;
+            renderStack();
+            document.getElementById('stackStatus').textContent = '🔄 Tumpukan direset. Klik PUSH untuk mulai.';
+            document.getElementById('stackStatus').className = 'status-msg info';
+        }
+
+        // ==================== QUEUE GAME ====================
+        let queueData = [];
+        let queueCounter = 1;
+        const orangEmojis = ['🧑', '👩', '👦', '👧', '🧒', '👨', '👩‍🦰', '🧑‍🦱', '👴', '👵'];
+
+        function renderQueue() {
+            const area = document.getElementById('antrianArea');
+            area.innerHTML = '';
+            queueData.forEach((o, i) => {
+                const div = document.createElement('div');
+                div.className = 'orang-antri';
+                div.textContent = o.emoji;
+                div.title = o.nama;
+                if (i === queueData.length - 1 && o._new) {
+                    div.classList.add('entering');
+                    setTimeout(() => { div.classList.remove('entering');
+                        o._new = false; }, 400);
+                }
+                area.appendChild(div);
+            });
+            document.getElementById('queueStatus').textContent =
+                queueData.length === 0 ?
+                '🚶 Antrian kosong. Klik ENQUEUE untuk orang datang.' :
+                `👥 ${queueData.length} orang mengantri. Paling depan: ${queueData[0].nama}.`;
+            document.getElementById('queueStatus').className = queueData.length === 0 ? 'status-msg info' :
+                'status-msg success';
+        }
+
+        function enqueueOrang() {
+            const emoji = orangEmojis[Math.floor(Math.random() * orangEmojis.length)];
+            const orang = { nama: 'Orang #' + queueCounter++, emoji: emoji, _new: true };
+            queueData.push(orang);
+            renderQueue();
+            document.getElementById('queueStatus').textContent =
+                `➕ ENQUEUE: ${orang.nama} datang dan berdiri di BELAKANG antrian. (FIFO!)`;
+            document.getElementById('queueStatus').className = 'status-msg success';
+        }
+
+        function dequeueOrang() {
+            if (queueData.length === 0) {
+                document.getElementById('queueStatus').textContent =
+                '⚠️ Antrian kosong! Tidak ada yang bisa dilayani.';
+                document.getElementById('queueStatus').className = 'status-msg warning';
+                return;
+            }
+            const area = document.getElementById('antrianArea');
+            const firstChild = area.firstElementChild;
+            if (firstChild) {
+                firstChild.classList.add('leaving');
+            }
+            const dilayani = queueData.shift();
+            setTimeout(() => {
+                renderQueue();
+                document.getElementById('queueStatus').textContent =
+                    `✅ DEQUEUE: ${dilayani.nama} (paling depan) dilayani kasir. Yang pertama datang, pertama dilayani!`;
+                document.getElementById('queueStatus').className = 'status-msg warning';
+            }, 400);
+        }
+
+        function resetQueue() {
+            queueData = [];
+            queueCounter = 1;
+            renderQueue();
+            document.getElementById('queueStatus').textContent = '🔄 Antrian direset. Klik ENQUEUE untuk mulai.';
+            document.getElementById('queueStatus').className = 'status-msg info';
+        }
+
+        // ==================== LIST GAME ====================
+        let listData = ['Telur 🥚', 'Gula 🍬', 'Mentega 🧈'];
+
+        function renderList() {
+            const ul = document.getElementById('listBelanja');
+            ul.innerHTML = '';
+            listData.forEach((item, i) => {
+                const li = document.createElement('li');
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <span><span class="item-num">${i+1}.</span> ${item}</span>
+                    <button class="hapus-btn" onclick="hapusItemList(${i})" title="Hapus item ini">❌</button>
+                `;
+                ul.appendChild(li);
+            });
+            document.getElementById('listStatus').textContent =
+                `📝 ${listData.length} item dalam daftar. Bisa tambah di akhir, sisipkan, atau hapus!`;
+            document.getElementById('listStatus').className = 'status-msg info';
+        }
+
+        function tambahItemList(mode) {
+            const input = document.getElementById('listInput');
+            const nama = input.value.trim();
+            if (!nama) {
+                document.getElementById('listStatus').textContent = '⚠️ Isi nama item dulu ya!';
+                document.getElementById('listStatus').className = 'status-msg warning';
+                return;
+            }
+            if (mode === 'akhir') {
+                listData.push(nama);
+                document.getElementById('listStatus').textContent = `➕ "${nama}" ditambahkan di akhir daftar (posisi ${listData.length}).`;
+            } else {
+                const posInput = document.getElementById('listPosInput');
+                let pos = parseInt(posInput.value);
+                if (isNaN(pos) || pos < 1 || pos > listData.length + 1) {
+                    document.getElementById('listStatus').textContent =
+                        `⚠️ Posisi tidak valid! Masukkan angka 1 sampai ${listData.length+1}.`;
+                    document.getElementById('listStatus').className = 'status-msg warning';
+                    return;
+                }
+                listData.splice(pos - 1, 0, nama);
+                document.getElementById('listStatus').textContent =
+                `📌 "${nama}" disisipkan di posisi ${pos}. Item lain digeser.`;
+            }
+            document.getElementById('listStatus').className = 'status-msg success';
+            input.value = '';
+            document.getElementById('listPosInput').value = '';
+            renderList();
+        }
+
+        function hapusItemList(index) {
+            const dihapus = listData[index];
+            listData.splice(index, 1);
+            document.getElementById('listStatus').textContent = `❌ "${dihapus}" dihapus dari daftar.`;
+            document.getElementById('listStatus').className = 'status-msg warning';
+            renderList();
+        }
+
+        function resetList() {
+            listData = ['Telur 🥚', 'Gula 🍬', 'Mentega 🧈'];
+            document.getElementById('listInput').value = '';
+            document.getElementById('listPosInput').value = '';
+            document.getElementById('listStatus').textContent = '🔄 Daftar direset ke contoh awal.';
+            document.getElementById('listStatus').className = 'status-msg info';
+            renderList();
+        }
+
+        // ==================== LINEAR SEARCH ====================
+        const tasBarang = [
+            { nama: 'Buku 📘', isTarget: false },
+            { nama: 'Dompet 👛', isTarget: false },
+            { nama: 'Tempat Pensil ✏️', isTarget: false },
+            { nama: 'Botol Minum 🧃', isTarget: false },
+            { nama: 'Jaket 🧥', isTarget: false },
+            { nama: 'Kunci Motor 🔑', isTarget: true },
+            { nama: 'Snack 🍪', isTarget: false },
+            { nama: 'Headset 🎧', isTarget: false },
+        ];
+        let linearChecked = [];
+        let linearFound = false;
+        let linearDone = false;
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+        let tasAcak = shuffleArray(tasBarang);
+
+        function renderLinearSearch() {
+            const area = document.getElementById('tasArea');
+            area.innerHTML = '';
+            tasAcak.forEach((barang, i) => {
+                const div = document.createElement('div');
+                div.className = 'barang-tas';
+                div.textContent = barang.nama;
+                div.id = 'barang-' + i;
+                if (linearChecked.includes(i) && barang.isTarget && linearFound) {
+                    div.classList.add('found');
+                } else if (linearChecked.includes(i) && !barang.isTarget) {
+                    div.classList.add('discarded');
+                }
+                area.appendChild(div);
+            });
+        }
+
+        function linearSearchStep() {
+            if (linearDone) {
+                document.getElementById('linearStatus').textContent =
+                '✅ Sudah ketemu! Klik "Acak Ulang Tas" untuk mencoba lagi.';
+                document.getElementById('linearStatus').className = 'status-msg success';
+                return;
+            }
+            const nextIdx = linearChecked.length;
+            if (nextIdx >= tasAcak.length) {
+                document.getElementById('linearStatus').textContent =
+                '😅 Sudah dicek semua, Kunci Motor tidak ditemukan? (Seharusnya ada, coba reset)';
+                document.getElementById('linearStatus').className = 'status-msg warning';
+                linearDone = true;
+                return;
+            }
+            const barang = tasAcak[nextIdx];
+            linearChecked.push(nextIdx);
+            renderLinearSearch();
+            const div = document.getElementById('barang-' + nextIdx);
+            if (div) {
+                div.classList.add('checking');
+                setTimeout(() => div.classList.remove('checking'), 500);
+            }
+            if (barang.isTarget) {
+                linearFound = true;
+                linearDone = true;
+                document.getElementById('linearStatus').textContent =
+                    `🎉 KETEMU! "${barang.nama}" ditemukan di urutan ke-${nextIdx + 1}! Setelah mengeluarkan ${nextIdx} barang lainnya.`;
+                document.getElementById('linearStatus').className = 'status-msg success';
+                setTimeout(() => renderLinearSearch(), 100);
+                document.getElementById('btnLinearStep').textContent = '✅ Selesai';
+            } else {
+                document.getElementById('linearStatus').textContent =
+                    `🔍 Cek urutan ke-${nextIdx + 1}: "${barang.nama}" — BUKAN Kunci Motor. Taruh di lantai, lanjut!`;
+                document.getElementById('linearStatus').className = 'status-msg warning';
+            }
+        }
+
+        function resetLinearSearch() {
+            tasAcak = shuffleArray(tasBarang);
+            linearChecked = [];
+            linearFound = false;
+            linearDone = false;
+            document.getElementById('btnLinearStep').textContent = '👆 Cari Satu per Satu (Step)';
+            document.getElementById('linearStatus').textContent =
+            '🔍 Tas diacak ulang! Klik "Cari Satu per Satu" untuk mulai mencari Kunci Motor.';
+            document.getElementById('linearStatus').className = 'status-msg info';
+            renderLinearSearch();
+        }
+
+        // ==================== BINARY SEARCH ====================
+        const binaryData = [];
+        for (let i = 1; i <= 31; i++) binaryData.push(i);
+        let binaryTarget = null;
+        let binaryLow = 0;
+        let binaryHigh = binaryData.length - 1;
+        let binaryMid = null;
+        let binaryFound = false;
+        let binaryDone = false;
+        let binaryHistory = [];
+
+        function renderBinarySearch() {
+            const area = document.getElementById('binaryArray');
+            area.innerHTML = '';
+            binaryData.forEach((val, i) => {
+                const div = document.createElement('div');
+                div.className = 'binary-cell';
+                div.textContent = val;
+                div.id = 'bcell-' + i;
+                if (binaryFound && i === binaryMid && val === binaryTarget) {
+                    div.classList.add('found-cell');
+                } else if (binaryMid === i && !binaryFound && binaryLow <= binaryHigh) {
+                    div.classList.add('mid');
+                } else if (i >= binaryLow && i <= binaryHigh && binaryLow <= binaryHigh) {
+                    div.classList.add('in-range');
+                } else if (binaryLow > binaryHigh || binaryDone) {
+                    // nothing
+                } else if (i < binaryLow || i > binaryHigh) {
+                    div.classList.add('out-range');
+                }
+                area.appendChild(div);
+            });
+        }
+
+        function initBinarySearch() {
+            const input = document.getElementById('binaryTarget');
+            const target = parseInt(input.value);
+            if (isNaN(target) || target < 1 || target > 31) {
+                document.getElementById('binaryStatus').textContent =
+                '⚠️ Masukkan angka target antara 1 sampai 31!';
+                document.getElementById('binaryStatus').className = 'status-msg warning';
+                return;
+            }
+            binaryTarget = target;
+            binaryLow = 0;
+            binaryHigh = binaryData.length - 1;
+            binaryMid = null;
+            binaryFound = false;
+            binaryDone = false;
+            binaryHistory = [];
+            document.getElementById('btnBinaryStep').disabled = false;
+            document.getElementById('btnBinaryStep').textContent = '📖 Langkah Berikutnya';
+            document.getElementById('binaryStatus').textContent =
+                `🎯 Target: ${binaryTarget}. Data terurut 1-31. Klik "Langkah Berikutnya" untuk mulai Binary Search!`;
+            document.getElementById('binaryStatus').className = 'status-msg info';
+            renderBinarySearch();
+        }
+
+        function binarySearchStep() {
+            if (binaryTarget === null) {
+                document.getElementById('binaryStatus').textContent =
+                '⚠️ Set target dulu ya! Masukkan angka lalu klik "Set Target & Cari".';
+                document.getElementById('binaryStatus').className = 'status-msg warning';
+                return;
+            }
+            if (binaryDone) {
+                document.getElementById('binaryStatus').textContent =
+                    binaryFound ? '✅ Sudah ketemu! Klik Reset untuk mencoba lagi.' :
+                    '😅 Pencarian selesai, target tidak ditemukan.';
+                document.getElementById('binaryStatus').className = 'status-msg success';
+                return;
+            }
+            if (binaryLow > binaryHigh) {
+                binaryDone = true;
+                document.getElementById('binaryStatus').textContent =
+                    `😅 Rentang habis. Target ${binaryTarget} tidak ditemukan dalam data.`;
+                document.getElementById('binaryStatus').className = 'status-msg warning';
+                document.getElementById('btnBinaryStep').disabled = true;
+                renderBinarySearch();
+                return;
+            }
+            binaryMid = Math.floor((binaryLow + binaryHigh) / 2);
+            const midVal = binaryData[binaryMid];
+            binaryHistory.push({ low: binaryLow, high: binaryHigh, mid: binaryMid, val: midVal });
+            renderBinarySearch();
+            if (midVal === binaryTarget) {
+                binaryFound = true;
+                binaryDone = true;
+                document.getElementById('binaryStatus').textContent =
+                    `🎉 KETEMU! Target ${binaryTarget} ditemukan di indeks ${binaryMid} (nilai=${midVal}). Hanya butuh ${binaryHistory.length} langkah!`;
+                document.getElementById('binaryStatus').className = 'status-msg success';
+                document.getElementById('btnBinaryStep').textContent = '✅ Selesai';
+                document.getElementById('btnBinaryStep').disabled = true;
+                setTimeout(() => renderBinarySearch(), 100);
+            } else if (midVal < binaryTarget) {
+                document.getElementById('binaryStatus').textContent =
+                    `📖 Langkah ${binaryHistory.length}: Tengah = ${midVal} (indeks ${binaryMid}). ${midVal} < ${binaryTarget} → BUANG bagian KIRI (1-${midVal}). Cari di KANAN.`;
+                document.getElementById('binaryStatus').className = 'status-msg warning';
+                binaryLow = binaryMid + 1;
+            } else {
+                document.getElementById('binaryStatus').textContent =
+                    `📖 Langkah ${binaryHistory.length}: Tengah = ${midVal} (indeks ${binaryMid}). ${midVal} > ${binaryTarget} → BUANG bagian KANAN (${midVal}-${binaryData[binaryHigh]}). Cari di KIRI.`;
+                document.getElementById('binaryStatus').className = 'status-msg warning';
+                binaryHigh = binaryMid - 1;
+            }
+            setTimeout(() => renderBinarySearch(), 300);
+        }
+
+        function resetBinarySearch() {
+            binaryTarget = null;
+            binaryLow = 0;
+            binaryHigh = binaryData.length - 1;
+            binaryMid = null;
+            binaryFound = false;
+            binaryDone = false;
+            binaryHistory = [];
+            document.getElementById('btnBinaryStep').disabled = true;
+            document.getElementById('btnBinaryStep').textContent = '📖 Langkah Berikutnya';
+            document.getElementById('binaryTarget').value = '';
+            document.getElementById('binaryStatus').textContent =
+            '🎯 Masukkan target (1-31) dan klik "Set Target & Cari" untuk mulai.';
+            document.getElementById('binaryStatus').className = 'status-msg info';
+            renderBinarySearch();
+        }
+
+        // ==================== BUBBLE SORT ====================
+        let bubbleArr = [7, 3, 9, 1, 5, 4];
+        let bubbleI = 0;
+        let bubbleJ = 0;
+        let bubbleSorted = false;
+        let bubbleAutoInterval = null;
+
+        function renderBubbleSort() {
+            const area = document.getElementById('bubbleBars');
+            area.innerHTML = '';
+            const maxVal = Math.max(...bubbleArr);
+            bubbleArr.forEach((val, i) => {
+                const div = document.createElement('div');
+                div.className = 'sort-bar';
+                div.style.height = (val / maxVal * 170) + 'px';
+                div.style.background = getBarColor(val, maxVal);
+                div.textContent = val;
+                div.id = 'bubble-bar-' + i;
+                const sortedCount = bubbleI;
+                if (i >= bubbleArr.length - sortedCount && bubbleSorted) {
+                    div.classList.add('sorted');
+                }
+                area.appendChild(div);
+            });
+        }
+
+        function getBarColor(val, max) {
+            const ratio = val / max;
+            const colors = ['#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ec4899', '#f43f5e'];
+            const idx = Math.min(Math.floor(ratio * colors.length), colors.length - 1);
+            return colors[idx];
+        }
+
+        function bubbleSortStep() {
+            if (bubbleSorted) {
+                document.getElementById('bubbleStatus').textContent =
+                '✅ Semua data sudah terurut! Klik "Acak Ulang" untuk mencoba lagi.';
+                document.getElementById('bubbleStatus').className = 'status-msg success';
+                return;
+            }
+            const n = bubbleArr.length;
+            if (bubbleI >= n - 1) {
+                bubbleSorted = true;
+                document.getElementById('bubbleStatus').textContent =
+                '🎉 Bubble Sort SELESAI! Semua data terurut dari kecil ke besar.';
+                document.getElementById('bubbleStatus').className = 'status-msg success';
+                document.getElementById('btnBubbleStep').textContent = '✅ Selesai';
+                renderBubbleSort();
+                setTimeout(() => {
+                    document.querySelectorAll('#bubbleBars .sort-bar').forEach(b => b.classList.add('sorted'));
+                }, 100);
+                return;
+            }
+            const barA = document.getElementById('bubble-bar-' + bubbleJ);
+            const barB = document.getElementById('bubble-bar-' + (bubbleJ + 1));
+            if (barA) barA.classList.add('comparing');
+            if (barB) barB.classList.add('comparing');
+            setTimeout(() => {
+                if (barA) barA.classList.remove('comparing');
+                if (barB) barB.classList.remove('comparing');
+            }, 500);
+
+            if (bubbleArr[bubbleJ] > bubbleArr[bubbleJ + 1]) {
+                [bubbleArr[bubbleJ], bubbleArr[bubbleJ + 1]] = [bubbleArr[bubbleJ + 1], bubbleArr[bubbleJ]];
+                document.getElementById('bubbleStatus').textContent =
+                    `🫧 Bandingkan indeks [${bubbleJ}]=${bubbleArr[bubbleJ+1]} vs [${bubbleJ+1}]=${bubbleArr[bubbleJ]} → TUKAR! (${bubbleArr[bubbleJ+1]} > ${bubbleArr[bubbleJ]})`;
+                document.getElementById('bubbleStatus').className = 'status-msg warning';
+                renderBubbleSort();
+                setTimeout(() => {
+                    const newA = document.getElementById('bubble-bar-' + bubbleJ);
+                    const newB = document.getElementById('bubble-bar-' + (bubbleJ + 1));
+                    if (newA) newA.classList.add('swapping');
+                    if (newB) newB.classList.add('swapping');
+                    setTimeout(() => {
+                        if (newA) newA.classList.remove('swapping');
+                        if (newB) newB.classList.remove('swapping');
+                    }, 500);
+                }, 50);
+            } else {
+                document.getElementById('bubbleStatus').textContent =
+                    `🫧 Bandingkan [${bubbleJ}]=${bubbleArr[bubbleJ]} vs [${bubbleJ+1}]=${bubbleArr[bubbleJ+1]} → Tidak perlu tukar.`;
+                document.getElementById('bubbleStatus').className = 'status-msg info';
+            }
+            bubbleJ++;
+            const maxJ = n - bubbleI - 1;
+            if (bubbleJ >= maxJ) {
+                bubbleJ = 0;
+                bubbleI++;
+                document.getElementById('bubbleStatus').textContent +=
+                    ` 🔝 Nilai terbesar sudah "menggelembung" ke posisi ${n-bubbleI}.`;
+                setTimeout(() => renderBubbleSort(), 100);
+            }
+        }
+
+        function bubbleSortAuto() {
+            if (bubbleAutoInterval) {
+                clearInterval(bubbleAutoInterval);
+                bubbleAutoInterval = null;
+                document.getElementById('btnBubbleAuto').textContent = '▶️ Auto Play';
+                return;
+            }
+            document.getElementById('btnBubbleAuto').textContent = '⏸️ Stop';
+            bubbleAutoInterval = setInterval(() => {
+                if (bubbleSorted) {
+                    clearInterval(bubbleAutoInterval);
+                    bubbleAutoInterval = null;
+                    document.getElementById('btnBubbleAuto').textContent = '▶️ Auto Play';
+                    return;
+                }
+                bubbleSortStep();
+            }, 700);
+        }
+
+        function resetBubbleSort() {
+            if (bubbleAutoInterval) {
+                clearInterval(bubbleAutoInterval);
+                bubbleAutoInterval = null;
+                document.getElementById('btnBubbleAuto').textContent = '▶️ Auto Play';
+            }
+            bubbleArr = shuffleArraySimple([7, 3, 9, 1, 5, 4, 8, 2, 6]);
+            bubbleI = 0;
+            bubbleJ = 0;
+            bubbleSorted = false;
+            document.getElementById('btnBubbleStep').textContent = '👆 Langkah Berikutnya';
+            document.getElementById('bubbleStatus').textContent =
+            '🫧 Data diacak ulang! Klik "Langkah" untuk melihat Bubble Sort.';
+            document.getElementById('bubbleStatus').className = 'status-msg info';
+            renderBubbleSort();
+        }
+
+        function shuffleArraySimple(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // ==================== SELECTION SORT ====================
+        let selectionArr = [7, 3, 9, 1, 5, 4];
+        let selectionPos = 0;
+        let selectionMinIdx = -1;
+        let selectionScanIdx = -1;
+        let selectionSorted = false;
+        let selectionAutoInterval = null;
+        let selectionPhase = 'find';
+
+        function renderSelectionSort() {
+            const area = document.getElementById('selectionBars');
+            area.innerHTML = '';
+            const maxVal = Math.max(...selectionArr);
+            selectionArr.forEach((val, i) => {
+                const div = document.createElement('div');
+                div.className = 'sort-bar';
+                div.style.height = (val / maxVal * 170) + 'px';
+                div.style.background = getBarColor(val, maxVal);
+                div.textContent = val;
+                div.id = 'sel-bar-' + i;
+                if (i < selectionPos && selectionSorted) {
+                    div.classList.add('sorted');
+                }
+                area.appendChild(div);
+            });
+            if (selectionScanIdx >= 0 && selectionPhase === 'find') {
+                const scanBar = document.getElementById('sel-bar-' + selectionScanIdx);
+                if (scanBar) scanBar.classList.add('comparing');
+            }
+            if (selectionMinIdx >= 0 && selectionPhase === 'swap') {
+                const minBar = document.getElementById('sel-bar-' + selectionMinIdx);
+                if (minBar) {
+                    minBar.classList.add('comparing');
+                    minBar.style.background = '#f59e0b';
+                }
+            }
+        }
+
+        function selectionSortStep() {
+            if (selectionSorted) {
+                document.getElementById('selectionStatus').textContent =
+                '✅ Semua data sudah terurut! Klik "Acak Ulang" untuk mencoba lagi.';
+                document.getElementById('selectionStatus').className = 'status-msg success';
+                return;
+            }
+            const n = selectionArr.length;
+            if (selectionPos >= n - 1) {
+                selectionSorted = true;
+                document.getElementById('selectionStatus').textContent =
+                '🎉 Selection Sort SELESAI! Semua terurut dari kecil ke besar.';
+                document.getElementById('selectionStatus').className = 'status-msg success';
+                document.getElementById('btnSelectionStep').textContent = '✅ Selesai';
+                renderSelectionSort();
+                setTimeout(() => {
+                    document.querySelectorAll('#selectionBars .sort-bar').forEach(b => b.classList.add(
+                        'sorted'));
+                }, 100);
+                return;
+            }
+            if (selectionPhase === 'find') {
+                if (selectionScanIdx < selectionPos) selectionScanIdx = selectionPos;
+                if (selectionScanIdx === selectionPos) {
+                    selectionMinIdx = selectionPos;
+                    selectionScanIdx = selectionPos + 1;
+                    document.getElementById('selectionStatus').textContent =
+                        `🃏 Mulai dari posisi ${selectionPos}. Mencari nilai terkecil...`;
+                    document.getElementById('selectionStatus').className = 'status-msg info';
+                    renderSelectionSort();
+                    return;
+                }
+                if (selectionScanIdx < n) {
+                    document.getElementById('selectionStatus').textContent =
+                        `🔍 Memindai indeks [${selectionScanIdx}]=${selectionArr[selectionScanIdx]}, bandingkan dengan min sementara [${selectionMinIdx}]=${selectionArr[selectionMinIdx]}.`;
+                    document.getElementById('selectionStatus').className = 'status-msg info';
+                    if (selectionArr[selectionScanIdx] < selectionArr[selectionMinIdx]) {
+                        selectionMinIdx = selectionScanIdx;
+                        document.getElementById('selectionStatus').textContent +=
+                            ` ⬅️ Nilai lebih kecil ditemukan! Min baru di indeks ${selectionMinIdx}.`;
+                    }
+                    selectionScanIdx++;
+                    renderSelectionSort();
+                } else {
+                    selectionPhase = 'swap';
+                    document.getElementById('selectionStatus').textContent =
+                        `🎯 Nilai terkecil ditemukan: ${selectionArr[selectionMinIdx]} di indeks ${selectionMinIdx}. Siap ditukar dengan posisi ${selectionPos}. Klik Langkah lagi untuk menukar.`;
+                    document.getElementById('selectionStatus').className = 'status-msg warning';
+                    renderSelectionSort();
+                }
+            } else if (selectionPhase === 'swap') {
+                if (selectionMinIdx !== selectionPos) {
+                    [selectionArr[selectionPos], selectionArr[selectionMinIdx]] = [selectionArr[selectionMinIdx],
+                        selectionArr[selectionPos]
+                    ];
+                    document.getElementById('selectionStatus').textContent =
+                        `🔄 TUKAR! Posisi [${selectionPos}]=${selectionArr[selectionPos]} ditukar dengan [${selectionMinIdx}]=${selectionArr[selectionMinIdx]}.`;
+                } else {
+                    document.getElementById('selectionStatus').textContent =
+                        `✅ Nilai terkecil sudah di posisi ${selectionPos}, tidak perlu tukar.`;
+                }
+                document.getElementById('selectionStatus').className = 'status-msg success';
+                selectionPos++;
+                selectionMinIdx = -1;
+                selectionScanIdx = selectionPos;
+                selectionPhase = 'find';
+                renderSelectionSort();
+                setTimeout(() => renderSelectionSort(), 300);
+            }
+        }
+
+        function selectionSortAuto() {
+            if (selectionAutoInterval) {
+                clearInterval(selectionAutoInterval);
+                selectionAutoInterval = null;
+                document.getElementById('btnSelectionAuto').textContent = '▶️ Auto Play';
+                return;
+            }
+            document.getElementById('btnSelectionAuto').textContent = '⏸️ Stop';
+            selectionAutoInterval = setInterval(() => {
+                if (selectionSorted) {
+                    clearInterval(selectionAutoInterval);
+                    selectionAutoInterval = null;
+                    document.getElementById('btnSelectionAuto').textContent = '▶️ Auto Play';
+                    return;
+                }
+                selectionSortStep();
+            }, 750);
+        }
+
+        function resetSelectionSort() {
+            if (selectionAutoInterval) {
+                clearInterval(selectionAutoInterval);
+                selectionAutoInterval = null;
+                document.getElementById('btnSelectionAuto').textContent = '▶️ Auto Play';
+            }
+            selectionArr = shuffleArraySimple([7, 3, 9, 1, 5, 4, 8, 2]);
+            selectionPos = 0;
+            selectionMinIdx = -1;
+            selectionScanIdx = 0;
+            selectionSorted = false;
+            selectionPhase = 'find';
+            document.getElementById('btnSelectionStep').textContent = '👆 Langkah Berikutnya';
+            document.getElementById('selectionStatus').textContent =
+            '🃏 Data diacak ulang! Klik "Langkah" untuk melihat Selection Sort.';
+            document.getElementById('selectionStatus').className = 'status-msg info';
+            renderSelectionSort();
+        }
+
+        // ==================== INITIALIZATION ====================
+        function initAll() {
+            renderArray();
+            renderStack();
+            renderQueue();
+            renderList();
+            renderLinearSearch();
+            renderBinarySearch();
+            renderBubbleSort();
+            renderSelectionSort();
+            document.getElementById('btnBinaryStep').disabled = true;
+        }
+
+        document.getElementById('listInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') tambahItemList('akhir');
+        });
+
+        initAll();
+        console.log('🎮 Game Struktur Data & Algoritma siap!');
+    </script>
+</body>
+</html>
+    </template>
+
+    <!-- =============================================================
+         TEMPLATE 2: LKPD
+         ============================================================= -->
+    <template id="tpl-lkpd">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD - Struktur Data & Algoritma</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --border: #dce3ea;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --transition: 0.2s ease;
+            --font: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: linear-gradient(135deg, #e8eef5 0%, #f0f4f8 30%, #eaf0f6 60%, #f4f6f9 100%);
+            background-attachment: fixed;
+            color: var(--text); line-height: 1.7; min-height: 100vh; padding: 16px;
+        }
+        .header {
+            background: var(--card-bg); border-radius: var(--radius);
+            box-shadow: var(--shadow-lg); padding: 28px 32px;
+            margin-bottom: 24px; text-align: center;
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71, #f39c12, #e74c3c);
+        }
+        .header .icon-row { font-size: 2.8rem; margin-bottom: 6px; letter-spacing: 4px; }
+        .header h1 { font-size: 1.7rem; font-weight: 700; color: var(--primary); letter-spacing: -0.3px; }
+        .header .subtitle { font-size: 0.9rem; color: var(--text-light); margin-top: 4px; font-weight: 500; }
+        .header .badge {
+            display: inline-block; background: #eaf6fd; color: #2471a3;
+            font-size: 0.78rem; font-weight: 600; padding: 4px 14px;
+            border-radius: 20px; margin-top: 8px; letter-spacing: 0.3px;
+        }
+        .container { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .card {
+            background: var(--card-bg); border-radius: var(--radius);
+            box-shadow: var(--shadow); padding: 24px 28px;
+            border: 1px solid var(--border); transition: var(--transition);
+        }
+        .card:hover { box-shadow: var(--shadow-lg); }
+        .card-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid #f0f3f7;
+        }
+        .card-header .section-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .icon-blue { background: #eaf6fd; color: #2980b9; }
+        .icon-green { background: #e8f8f0; color: #27ae60; }
+        .icon-orange { background: #fef5e7; color: #e67e22; }
+        .icon-purple { background: #f3eefc; color: #7d3c98; }
+        .icon-red { background: #fdecea; color: #c0392b; }
+        .card-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--primary); letter-spacing: -0.2px; }
+        .card-header .section-label {
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.6px; color: var(--text-light); margin-left: auto;
+            background: #f8f9fb; padding: 4px 10px; border-radius: 6px;
+        }
+        .identity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 600px) { .identity-grid { grid-template-columns: 1fr; } }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-weight: 600; font-size: 0.85rem; color: var(--text); letter-spacing: 0.1px; }
+        .form-group label .emoji { margin-right: 4px; }
+        .form-group input {
+            padding: 11px 14px; border: 2px solid var(--border);
+            border-radius: var(--radius-sm); font-size: 0.95rem;
+            font-family: var(--font); transition: var(--transition);
+            background: #fafbfc; color: var(--text); width: 100%;
+        }
+        .form-group input:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); background: #fff;
+        }
+        .question-block {
+            background: #fafbfc; border-radius: var(--radius-sm);
+            padding: 18px 20px; margin-bottom: 14px;
+            border: 1px solid #eef1f5; transition: var(--transition);
+        }
+        .question-block:last-child { margin-bottom: 0; }
+        .question-block:hover { border-color: #d5dde5; background: #fdfefe; }
+        .question-block .q-title { font-weight: 700; font-size: 0.9rem; color: var(--primary); margin-bottom: 4px; }
+        .question-block .q-story {
+            background: #fefdf5; border-left: 3px solid #f0c040;
+            padding: 10px 14px; border-radius: 0 6px 6px 0;
+            margin-bottom: 10px; font-size: 0.85rem; color: #6b5c30;
+            font-style: italic; line-height: 1.5;
+        }
+        .answer-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .answer-row input[type="text"], .answer-row input[type="number"] {
+            padding: 9px 12px; border: 2px solid var(--border);
+            border-radius: var(--radius-sm); font-size: 0.9rem;
+            font-family: var(--font); transition: var(--transition);
+            background: #fff; min-width: 120px; flex: 1; max-width: 280px;
+        }
+        .answer-row input:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.08);
+        }
+        .answer-row textarea {
+            padding: 9px 12px; border: 2px solid var(--border);
+            border-radius: var(--radius-sm); font-size: 0.9rem;
+            font-family: var(--font); transition: var(--transition);
+            background: #fff; resize: vertical; min-height: 60px;
+            width: 100%; max-width: 500px;
+        }
+        .answer-row textarea:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.08);
+        }
+        .radio-group { display: flex; gap: 20px; align-items: center; }
+        .radio-group label {
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer; font-weight: 500; font-size: 0.9rem;
+            padding: 8px 16px; border-radius: 20px;
+            border: 2px solid var(--border); transition: var(--transition); user-select: none;
+        }
+        .radio-group label:hover { border-color: #b0c4d8; background: #f8fafc; }
+        .radio-group input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; }
+        .radio-group label:has(input:checked) { border-color: var(--accent); background: #eaf6fd; font-weight: 600; }
+        .hint-text { font-size: 0.78rem; color: #95a5a6; margin-top: 4px; font-style: italic; }
+        .sub-label { font-weight: 700; font-size: 0.85rem; color: #5a6c7d; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .sub-label .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .dot-blue { background: #3498db; }
+        .dot-green { background: #27ae60; }
+        .dot-orange { background: #e67e22; }
+        .dot-purple { background: #8e44ad; }
+        .dot-red { background: #c0392b; }
+        .button-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 8px; }
+        .btn {
+            padding: 12px 24px; border-radius: 25px; font-weight: 600;
+            font-size: 0.9rem; cursor: pointer; border: none;
+            transition: all 0.25s ease; letter-spacing: 0.2px;
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font); text-decoration: none; white-space: nowrap;
+        }
+        .btn-download-word { background: #2b5797; color: #fff; box-shadow: 0 4px 14px rgba(43, 87, 151, 0.3); }
+        .btn-download-word:hover { background: #1e3f6f; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43, 87, 151, 0.4); }
+        .btn-download-pdf { background: #c0392b; color: #fff; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.3); }
+        .btn-download-pdf:hover { background: #a93226; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4); }
+        .btn-reset { background: #fff; color: #5a6c7d; border: 2px solid #dce3ea; }
+        .btn-reset:hover { background: #f5f6f8; border-color: #bcc4cc; transform: translateY(-2px); }
+        .btn:active { transform: scale(0.97); }
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: #2c3e50; color: #fff; padding: 12px 24px;
+            border-radius: 25px; font-weight: 600; font-size: 0.9rem;
+            z-index: 999; pointer-events: none; opacity: 0;
+            transition: all 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { background: #27ae60; }
+        .toast.info { background: #2980b9; }
+        .auto-save-indicator { font-size: 0.75rem; color: #95a5a6; text-align: center; margin-top: 6px; transition: all 0.3s ease; }
+        .auto-save-indicator.saved { color: #27ae60; font-weight: 600; }
+        @media print {
+            body { background: #fff !important; padding: 0 !important; color: #000 !important; font-size: 11pt; }
+            .header::before { background: #000 !important; height: 2px !important; }
+            .header { box-shadow: none !important; border: 1px solid #ccc !important; padding: 16px !important; margin-bottom: 12px !important; }
+            .card { box-shadow: none !important; border: 1px solid #ddd !important; padding: 14px 16px !important; margin-bottom: 10px !important; page-break-inside: avoid; }
+            .button-row, .btn, .auto-save-indicator, .toast, .card-header .section-label, .hint-text { display: none !important; }
+            input, textarea { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; font-size: 10pt !important; padding: 4px 8px !important; box-shadow: none !important; }
+            .radio-group label { border: 1px solid #ccc !important; background: #fff !important; padding: 4px 10px !important; }
+            .question-block { background: #fff !important; border: 1px solid #eee !important; padding: 10px 12px !important; }
+            .question-block .q-story { background: #fff !important; border-left: 2px solid #999 !important; }
+            .container { max-width: 100% !important; gap: 8px !important; }
+            @page { margin: 1.2cm; size: A4; }
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.3rem; }
+            .card { padding: 16px; }
+            .question-block { padding: 14px; }
+            .identity-grid { grid-template-columns: 1fr; }
+            .button-row { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
+            .answer-row input[type="text"], .answer-row input[type="number"] { max-width: 100%; }
+            .radio-group { flex-direction: column; gap: 8px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+
+    <div class="header">
+        <div class="icon-row">📊💻🔍</div>
+        <h1>LKPD – Struktur Data & Algoritma</h1>
+        <p class="subtitle">Lembar Kerja Peserta Didik • Kasus Sederhana Sehari-hari</p>
+        <span class="badge">Versi 1 · Berpasangan</span>
+    </div>
+
+    <div class="container">
+        <div class="card" id="card-identity">
+            <div class="card-header">
+                <div class="section-icon icon-purple">👥</div>
+                <h2>Identitas Kelompok</h2>
+                <span class="section-label">Isi Lengkap</span>
+            </div>
+            <div class="identity-grid">
+                <div class="form-group">
+                    <label><span class="emoji">🧑</span> Nama Siswa 1</label>
+                    <input type="text" id="nama1" placeholder="Tulis nama siswa pertama..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label><span class="emoji">🧑</span> Nama Siswa 2</label>
+                    <input type="text" id="nama2" placeholder="Tulis nama siswa kedua..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label><span class="emoji">🏫</span> Kelas</label>
+                    <input type="text" id="kelas" placeholder="Contoh: X RPL 1" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label><span class="emoji">📅</span> Tanggal</label>
+                    <input type="date" id="tanggal">
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="card-bagian-a">
+            <div class="card-header">
+                <div class="section-icon icon-blue">📦</div>
+                <h2>Bagian A: Struktur Data</h2>
+                <span class="section-label">Pilih & Jelaskan</span>
+            </div>
+
+            <div class="sub-label"><span class="dot dot-blue"></span> 1. Array (Rak Sepatu)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Ibu memiliki rak sepatu 4 slot. Slot nomor 0 diisi sepatu sekolah, slot 1 sepatu olahraga, slot 2 sandal, slot 3 sepatu pesta.</div>
+                <div class="q-title">a. Ibu ingin mengambil sepatu olahraga. Di slot berapa ia harus mengambilnya?</div>
+                <div class="answer-row"><span>Slot nomor:</span><input type="number" id="q1a" placeholder="0-3" min="0" max="3" data-save="q1a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Jika Ibu membeli sepatu baru dan ingin menaruhnya di rak, apa yang terjadi? (Rak hanya muat 4 slot)</div>
+                <div class="answer-row"><textarea id="q1b" placeholder="Jelaskan jawabanmu..." data-save="q1b"></textarea></div>
+            </div>
+
+            <div class="sub-label" style="margin-top:8px;"><span class="dot dot-green"></span> 2. Stack (Tumpukan Buku)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Sebuah tumpukan buku di perpustakaan disusun dari bawah: Buku A, lalu B di atasnya, lalu C di atasnya. Petugas hanya boleh mengambil buku dari atas.</div>
+                <div class="q-title">a. Buku apa yang pertama kali diambil petugas?</div>
+                <div class="answer-row"><span>Buku:</span><input type="text" id="q2a" placeholder="Jawaban..." data-save="q2a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Jika petugas mengambil satu buku, lalu mengambil satu buku lagi, buku apa yang tersisa di tumpukan paling bawah?</div>
+                <div class="answer-row"><span>Buku:</span><input type="text" id="q2b" placeholder="Jawaban..." data-save="q2b"></div>
+            </div>
+
+            <div class="sub-label" style="margin-top:8px;"><span class="dot dot-orange"></span> 3. Queue (Antrian Minum)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Siswa antri minum di depan galon: Dani datang pertama, Eka datang kedua, Fani datang ketiga.</div>
+                <div class="q-title">a. Siapa yang pertama kali mendapat air minum?</div>
+                <div class="answer-row"><span>Nama:</span><input type="text" id="q3a" placeholder="Jawaban..." data-save="q3a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Jika Dani sudah selesai minum lalu pergi, siapa yang kini menjadi antrian terdepan?</div>
+                <div class="answer-row"><span>Nama:</span><input type="text" id="q3b" placeholder="Jawaban..." data-save="q3b"></div>
+            </div>
+
+            <div class="sub-label" style="margin-top:8px;"><span class="dot dot-purple"></span> 4. List (Daftar Tugas)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Andi memiliki daftar tugas: PR Matematika, PR Bahasa Indonesia, PR IPA.</div>
+                <div class="q-title">a. Andi ingin menambahkan PR Bahasa Inggris di posisi ke-4. Apakah daftar bisa langsung bertambah? (Ya/Tidak)</div>
+                <div class="answer-row">
+                    <div class="radio-group">
+                        <label><input type="radio" name="q4a" value="Ya" data-save="q4a"> ✅ Ya</label>
+                        <label><input type="radio" name="q4a" value="Tidak" data-save="q4a"> ❌ Tidak</label>
+                    </div>
+                </div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Andi ingin menghapus PR IPA karena sudah dikerjakan. Setelah dihapus, ada berapa tugas di daftar?</div>
+                <div class="answer-row"><span>Jumlah:</span><input type="number" id="q4b" placeholder="Angka" min="0" data-save="q4b"><span>tugas</span></div>
+            </div>
+        </div>
+
+        <div class="card" id="card-bagian-b">
+            <div class="card-header">
+                <div class="section-icon icon-green">🔍</div>
+                <h2>Bagian B: Algoritma Pencarian</h2>
+                <span class="section-label">Cari & Temukan</span>
+            </div>
+
+            <div class="sub-label"><span class="dot dot-orange"></span> 5. Linear Search (Mencari Dompet di Tas)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Di dalam tas ada 5 benda disimpan acak: Pensil, Buku, Dompet, Botol Minum, Charger. Kamu mencari "Dompet" dengan cara mengeluarkan satu per satu dari depan ke belakang.</div>
+                <div class="q-title">a. Benda apa yang diperiksa paling awal?</div>
+                <div class="answer-row"><span>Benda:</span><input type="text" id="q5a" placeholder="Jawaban..." data-save="q5a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Berapa kali pemeriksaan sampai dompet ditemukan?</div>
+                <div class="answer-row"><span>Jumlah:</span><input type="number" id="q5b" placeholder="Angka" min="1" max="5" data-save="q5b"><span>kali</span></div>
+            </div>
+
+            <div class="sub-label" style="margin-top:8px;"><span class="dot dot-blue"></span> 6. Binary Search (Mencari Halaman Buku)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Sebuah buku petunjuk memiliki halaman 1 sampai 16, isinya sudah terurut abjad. Kamu mencari kata yang ada di halaman 11.<br>• Langkah 1: Buka tengah (halaman 8) → terlalu kiri, buang halaman 1–8. Sisa: 9–16.<br>• Langkah 2: Buka tengah (halaman 12) → terlalu kanan, buang halaman 13–16.</div>
+                <div class="q-title">a. Tuliskan rentang halaman yang tersisa setelah langkah kedua di atas.</div>
+                <div class="answer-row"><span>Rentang:</span><input type="text" id="q6a" placeholder="Contoh: 9-12" data-save="q6a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Halaman berapa yang akan kamu buka selanjutnya? (halaman tengah dari sisa)</div>
+                <div class="answer-row"><span>Halaman:</span><input type="number" id="q6b" placeholder="Angka" min="1" max="16" data-save="q6b"></div>
+            </div>
+        </div>
+
+        <div class="card" id="card-bagian-c">
+            <div class="card-header">
+                <div class="section-icon icon-orange">🔢</div>
+                <h2>Bagian C: Algoritma Pengurutan</h2>
+                <span class="section-label">Urutkan & Susun</span>
+            </div>
+
+            <div class="sub-label"><span class="dot dot-red"></span> 7. Bubble Sort (Mengurutkan Angka Gelembung)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Empat buah angka: <strong>5, 1, 4, 2</strong>. Urutkan dari kecil ke besar dengan metode gelembung. Lakukan satu putaran penuh dari kiri ke kanan (bandingkan pasangan).</div>
+                <div class="q-title">Tuliskan urutan angka setelah putaran pertama selesai.</div>
+                <div class="answer-row"><span>Urutan:</span><input type="text" id="q7" placeholder="Contoh: 1, 4, 2, 5" data-save="q7"></div>
+                <p class="hint-text">💡 Petunjuk: Bandingkan pasangan (5,1), lalu (1,4), lalu (4,2) — tukar jika perlu.</p>
+            </div>
+
+            <div class="sub-label" style="margin-top:8px;"><span class="dot dot-purple"></span> 8. Selection Sort (Memilih Kartu Terkecil)</div>
+            <div class="question-block">
+                <div class="q-story">📌 Kartu remi: <strong>7, 3, 9, 2</strong>. Ingin diurutkan dari kecil ke besar dengan cara mencari angka terkecil satu per satu.</div>
+                <div class="q-title">a. Pada langkah pertama, kartu terkecil adalah ... (sebutkan angkanya).</div>
+                <div class="answer-row"><span>Angka:</span><input type="number" id="q8a" placeholder="Angka" data-save="q8a"></div>
+            </div>
+            <div class="question-block">
+                <div class="q-title">b. Setelah kartu terkecil ditaruh di posisi paling kiri, bagaimana urutan kartu sekarang?</div>
+                <div class="answer-row"><span>Urutan:</span><input type="text" id="q8b" placeholder="Contoh: 2, 3, 9, 7" data-save="q8b"></div>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <div class="button-row">
+                <button class="btn btn-download-word" onclick="downloadWord()">📄 Download Word (.doc)</button>
+                <button class="btn btn-download-pdf" onclick="downloadPDF()">🖨️ Download PDF</button>
+                <button class="btn btn-reset" onclick="resetAll()">🔄 Reset Jawaban</button>
+            </div>
+            <p class="auto-save-indicator" id="autoSaveIndicator">💾 Jawaban tersimpan otomatis di browser</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const STORAGE_KEY = 'lkpd_v1_answers';
+            const AUTO_SAVE_DELAY = 600;
+            let saveTimeout = null;
+            const indicator = document.getElementById('autoSaveIndicator');
+
+            function getAllInputs() {
+                const inputs = document.querySelectorAll('input[data-save], textarea[data-save]');
+                const radios = document.querySelectorAll('input[type="radio"][data-save]');
+                return { inputs, radios };
+            }
+
+            function collectAllData() {
+                const data = {};
+                const { inputs } = getAllInputs();
+                inputs.forEach(inp => { data[inp.id] = inp.value; });
+                const radioNames = new Set();
+                document.querySelectorAll('input[type="radio"][data-save]').forEach(r => radioNames.add(r.name));
+                radioNames.forEach(name => {
+                    const checked = document.querySelector(`input[name="${name}"]:checked`);
+                    data['radio_' + name] = checked ? checked.value : '';
+                });
+                data['nama1'] = document.getElementById('nama1')?.value || '';
+                data['nama2'] = document.getElementById('nama2')?.value || '';
+                data['kelas'] = document.getElementById('kelas')?.value || '';
+                data['tanggal'] = document.getElementById('tanggal')?.value || '';
+                return data;
+            }
+
+            function saveToLocalStorage() {
+                try {
+                    const data = collectAllData();
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                    if (indicator) {
+                        indicator.textContent = '✅ Tersimpan · ' + new Date().toLocaleTimeString('id-ID');
+                        indicator.classList.add('saved');
+                        setTimeout(() => {
+                            indicator.textContent = '💾 Jawaban tersimpan otomatis di browser';
+                            indicator.classList.remove('saved');
+                        }, 2000);
+                    }
+                } catch (e) { console.warn('Save failed:', e); }
+            }
+
+            function restoreFromLocalStorage() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    for (const [key, value] of Object.entries(data)) {
+                        if (key.startsWith('radio_')) continue;
+                        if (key.startsWith('nama') || key === 'kelas' || key === 'tanggal') continue;
+                        const el = document.getElementById(key);
+                        if (el) el.value = value;
+                    }
+                    for (const [key, value] of Object.entries(data)) {
+                        if (key.startsWith('radio_')) {
+                            const name = key.replace('radio_', '');
+                            if (value) {
+                                const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+                                if (radio) radio.checked = true;
+                            }
+                        }
+                    }
+                    if (data['nama1']) document.getElementById('nama1').value = data['nama1'];
+                    if (data['nama2']) document.getElementById('nama2').value = data['nama2'];
+                    if (data['kelas']) document.getElementById('kelas').value = data['kelas'];
+                    if (data['tanggal']) document.getElementById('tanggal').value = data['tanggal'];
+                } catch (e) { console.warn('Restore failed:', e); }
+            }
+
+            function debouncedSave() {
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveToLocalStorage, AUTO_SAVE_DELAY);
+            }
+
+            function attachAutoSaveListeners() {
+                const { inputs, radios } = getAllInputs();
+                inputs.forEach(inp => {
+                    inp.addEventListener('input', debouncedSave);
+                    inp.addEventListener('change', debouncedSave);
+                });
+                radios.forEach(radio => { radio.addEventListener('change', debouncedSave); });
+                ['nama1', 'nama2', 'kelas', 'tanggal'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.addEventListener('input', debouncedSave);
+                        el.addEventListener('change', debouncedSave);
+                    }
+                });
+            }
+
+            function showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast ' + type + ' show';
+                clearTimeout(toast._hideTimeout);
+                toast._hideTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2200);
+            }
+
+            function escapeHTML(str) {
+                if (!str) return '';
+                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
+
+            function downloadWord() {
+                const data = collectAllData();
+                const nama1 = data['nama1'] || '.......................................';
+                const nama2 = data['nama2'] || '.......................................';
+                const kelas = data['kelas'] || '.......................................';
+                const tanggal = data['tanggal'] || '.......................................';
+                function val(id) { return (data[id] !== undefined && data[id] !== '') ? data[id] : '.......................................'; }
+                function radioVal(name) {
+                    const key = 'radio_' + name;
+                    return (data[key] && data[key] !== '') ? data[key] : '.......................................';
+                }
+
+                const wordHTML = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                  xmlns:w="urn:schemas-microsoft-com:office:word"
+                  xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+              <meta charset="UTF-8">
+              <style>
+                body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.7; color: #1a1a1a; margin: 40px; }
+                h1 { font-size: 18pt; text-align: center; margin-bottom: 4px; color: #2c3e50; }
+                .subtitle { text-align: center; font-size: 10pt; color: #666; margin-bottom: 18px; }
+                table.identity { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid #ccc; }
+                table.identity td { padding: 8px 12px; border: 1px solid #ddd; font-size: 10pt; }
+                table.identity td.label { background: #f5f6f8; font-weight: bold; width: 25%; }
+                h2 { font-size: 13pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 6px; margin-top: 22px; margin-bottom: 10px; }
+                h3 { font-size: 11pt; color: #444; margin-top: 14px; margin-bottom: 6px; }
+                .q-block { background: #f9fafb; border: 1px solid #e8ecf0; padding: 10px 14px; margin-bottom: 8px; border-radius: 4px; }
+                .q-story { font-style: italic; color: #5a5a5a; font-size: 10pt; margin-bottom: 6px; border-left: 3px solid #e0c040; padding-left: 10px; }
+                .q-title { font-weight: bold; font-size: 10.5pt; margin-bottom: 4px; }
+                .answer-block { display: inline; background: #fffde7; padding: 2px 8px; border-bottom: 1px dashed #999; }
+                @page { size: A4; margin: 1.5cm; }
+              </style>
+            </head>
+            <body>
+                <h1>LKPD – Struktur Data & Algoritma</h1>
+                <p class="subtitle">Lembar Kerja Peserta Didik · Kasus Sederhana Sehari-hari · Versi 1</p>
+                <table class="identity">
+                    <tr><td class="label">Nama Siswa 1</td><td>${escapeHTML(nama1)}</td></tr>
+                    <tr><td class="label">Nama Siswa 2</td><td>${escapeHTML(nama2)}</td></tr>
+                    <tr><td class="label">Kelas</td><td>${escapeHTML(kelas)}</td></tr>
+                    <tr><td class="label">Tanggal</td><td>${escapeHTML(tanggal)}</td></tr>
+                </table>
+                <h2>Bagian A: Struktur Data</h2>
+                <h3>1. Array (Rak Sepatu)</h3>
+                <div class="q-block">
+                    <p class="q-story">Ibu memiliki rak sepatu 4 slot. Slot 0: sepatu sekolah, slot 1: sepatu olahraga, slot 2: sandal, slot 3: sepatu pesta.</p>
+                    <p class="q-title">a. Slot sepatu olahraga:</p>
+                    <p>Jawaban: <span class="answer-block">Slot nomor ${escapeHTML(val('q1a'))}</span></p>
+                    <p class="q-title">b. Jika Ibu membeli sepatu baru (rak hanya muat 4 slot):</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q1b'))}</span></p>
+                </div>
+                <h3>2. Stack (Tumpukan Buku)</h3>
+                <div class="q-block">
+                    <p class="q-story">Tumpukan dari bawah: Buku A, B, C. Hanya boleh ambil dari atas.</p>
+                    <p class="q-title">a. Buku pertama diambil:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q2a'))}</span></p>
+                    <p class="q-title">b. Setelah ambil 2 buku, tersisa di paling bawah:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q2b'))}</span></p>
+                </div>
+                <h3>3. Queue (Antrian Minum)</h3>
+                <div class="q-block">
+                    <p class="q-story">Antrian: Dani (1), Eka (2), Fani (3).</p>
+                    <p class="q-title">a. Pertama dapat air:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q3a'))}</span></p>
+                    <p class="q-title">b. Setelah Dani pergi, terdepan:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q3b'))}</span></p>
+                </div>
+                <h3>4. List (Daftar Tugas)</h3>
+                <div class="q-block">
+                    <p class="q-story">Daftar: PR Matematika, PR B. Indonesia, PR IPA.</p>
+                    <p class="q-title">a. Bisa langsung tambah PR B. Inggris di posisi ke-4?</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(radioVal('q4a'))}</span></p>
+                    <p class="q-title">b. Setelah hapus PR IPA, jumlah tugas:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q4b'))} tugas</span></p>
+                </div>
+                <h2>Bagian B: Algoritma Pencarian</h2>
+                <h3>5. Linear Search (Dompet di Tas)</h3>
+                <div class="q-block">
+                    <p class="q-story">Benda: Pensil, Buku, Dompet, Botol Minum, Charger. Cari dari depan.</p>
+                    <p class="q-title">a. Benda diperiksa paling awal:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q5a'))}</span></p>
+                    <p class="q-title">b. Pemeriksaan sampai dompet ditemukan:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q5b'))} kali</span></p>
+                </div>
+                <h3>6. Binary Search (Halaman Buku)</h3>
+                <div class="q-block">
+                    <p class="q-story">Halaman 1-16, cari halaman 11. Langkah 1: buka hlm 8 (buang 1-8). Langkah 2: buka hlm 12 (buang 13-16).</p>
+                    <p class="q-title">a. Rentang tersisa setelah langkah kedua:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q6a'))}</span></p>
+                    <p class="q-title">b. Halaman tengah selanjutnya:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q6b'))}</span></p>
+                </div>
+                <h2>Bagian C: Algoritma Pengurutan</h2>
+                <h3>7. Bubble Sort</h3>
+                <div class="q-block">
+                    <p class="q-story">Angka: 5, 1, 4, 2. Urutkan kecil→besar. Satu putaran penuh.</p>
+                    <p class="q-title">Urutan setelah putaran pertama:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q7'))}</span></p>
+                </div>
+                <h3>8. Selection Sort</h3>
+                <div class="q-block">
+                    <p class="q-story">Kartu: 7, 3, 9, 2. Cari terkecil satu per satu.</p>
+                    <p class="q-title">a. Kartu terkecil pada langkah pertama:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q8a'))}</span></p>
+                    <p class="q-title">b. Urutan setelah kartu terkecil di kiri:</p>
+                    <p>Jawaban: <span class="answer-block">${escapeHTML(val('q8b'))}</span></p>
+                </div>
+                <p style="text-align:center; margin-top:30px; color:#888; font-size:9pt;">— LKPD Versi 1 · Dikerjakan berpasangan —</p>
+            </body>
+            </html>`;
+
+                const blob = new Blob(['\ufeff' + wordHTML], { type: 'application/msword;charset=UTF-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'LKPD_StrukturData_Algoritma.doc';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showToast('📄 Dokumen Word berhasil diunduh!', 'success');
+            }
+
+            function downloadPDF() {
+                showToast('🖨️ Membuka dialog cetak... Pilih "Save as PDF".', 'info');
+                setTimeout(() => { window.print(); }, 400);
+            }
+
+            function resetAll() {
+                if (!confirm('Apakah kamu yakin ingin menghapus SEMUA jawaban?')) return;
+                const { inputs, radios } = getAllInputs();
+                inputs.forEach(inp => { inp.value = ''; });
+                radios.forEach(radio => { radio.checked = false; });
+                ['nama1', 'nama2', 'kelas', 'tanggal'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+                try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+                if (indicator) {
+                    indicator.textContent = '💾 Jawaban tersimpan otomatis di browser';
+                    indicator.classList.remove('saved');
+                }
+                showToast('🔄 Semua jawaban telah direset!', 'info');
+            }
+
+            function init() {
+                restoreFromLocalStorage();
+                attachAutoSaveListeners();
+                const tanggalEl = document.getElementById('tanggal');
+                if (tanggalEl && !tanggalEl.value) {
+                    tanggalEl.value = new Date().toISOString().split('T')[0];
+                }
+                saveToLocalStorage();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else { init(); }
+
+            window.downloadWord = downloadWord;
+            window.downloadPDF = downloadPDF;
+            window.resetAll = resetAll;
+        })();
+    </script>
+</body>
+</html>
+    </template>
+
+    <!-- =============================================================
+         TEMPLATE 3: KUIS
+         ============================================================= -->
+    <template id="tpl-quiz">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Struktur Data & Algoritma - SMK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        .radio-custom:checked + div { background-color: #ebf5ff; border-color: #3b82f6; }
+        .radio-custom:checked + div .circle { background-color: #3b82f6; border-color: #3b82f6; }
+        .radio-custom:checked + div .circle::after {
+            content: ''; display: block; width: 8px; height: 8px; background: white;
+            border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        #pdf-content { font-family: 'Inter', sans-serif; }
+
+        /* ===== PENYEMPURNAAN TAMPILAN LOGIN KUIS ===== */
+        html { min-height: 100%; background: #eef2ff; }
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: 0;
+            padding: 28px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background:
+                radial-gradient(circle at 12% 15%, rgba(129, 140, 248, .22), transparent 30%),
+                radial-gradient(circle at 90% 85%, rgba(96, 165, 250, .20), transparent 28%),
+                linear-gradient(135deg, #f8faff 0%, #eef2ff 52%, #f5f3ff 100%);
+        }
+        #intro-screen {
+            width: min(100%, 440px);
+            margin: auto;
+            padding: clamp(24px, 5vw, 38px);
+            border: 1px solid rgba(255,255,255,.9);
+            border-radius: 24px;
+            background: rgba(255,255,255,.96);
+            box-shadow: 0 24px 70px rgba(49, 46, 129, .16);
+            animation: loginFadeIn .55s ease both;
+        }
+        #intro-screen > div:first-child > div:first-child {
+            width: 72px;
+            height: 72px;
+            color: #fff;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 10px 24px rgba(79,70,229,.25);
+        }
+        #intro-screen h1 {
+            font-size: clamp(1.35rem, 4vw, 1.7rem);
+            line-height: 1.25;
+            letter-spacing: -.04em;
+        }
+        #intro-screen form label { color: #334155; font-weight: 600; }
+        #intro-screen input, #intro-screen select {
+            min-height: 48px;
+            border: 1.5px solid #dbe2f0;
+            background-color: #f8fafc;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        #intro-screen input:focus, #intro-screen select:focus {
+            border-color: #6366f1;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99,102,241,.13);
+        }
+        #intro-screen button[type="submit"] {
+            min-height: 50px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 8px 18px rgba(79,70,229,.22);
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+        }
+        #intro-screen button[type="submit"]:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(79,70,229,.28);
+        }
+        #intro-screen button[type="submit"]:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+        #quiz-screen, #result-screen { margin: 24px auto; width: min(100%, 900px); }
+        @keyframes loginFadeIn {
+            from { opacity: 0; transform: translateY(12px) scale(.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (max-width: 480px) {
+            body { padding: 18px 12px; }
+            #intro-screen { border-radius: 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #intro-screen { animation: none; }
+            #intro-screen button[type="submit"] { transition: none; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="intro-screen" class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full transition-all duration-500">
+        <div class="text-center mb-8">
+            <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Kuis Struktur Data & Algoritma</h1>
+            <p class="text-gray-500 mt-2 text-sm">Standar Kelas 10 SMK</p>
+        </div>
+        <form id="identity-form" onsubmit="startQuiz(event)">
+            <div class="mb-5">
+                <label for="studentName" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                <input type="text" id="studentName" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" placeholder="Masukkan nama Anda">
+            </div>
+            <div class="mb-8">
+                <label for="studentClass" class="block text-sm font-medium text-gray-700 mb-2">Kelas</label>
+                <select id="studentClass" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors bg-white">
+                    <option value="" disabled selected>Pilih kelas Anda</option>
+                    <option value="X Kulit A">X Kulit A</option>
+                    <option value="X Kulit B">X Kulit B</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+                Mulai Kuis
+            </button>
+        </form>
+    </div>
+
+    <div id="quiz-screen" class="hidden w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-500 my-8">
+        <div class="bg-blue-600 p-6 text-white sticky top-0 z-10 flex justify-between items-center shadow-md">
+            <div>
+                <h2 class="text-xl font-bold">Kuis Sedang Berlangsung</h2>
+                <p class="text-blue-100 text-sm mt-1" id="quiz-identity-display">Nama - Kelas</p>
+            </div>
+            <div class="bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
+                <span class="font-semibold" id="progress-text">0 / 10 Terjawab</span>
+            </div>
+        </div>
+        <div class="p-6 md:p-8">
+            <div id="questions-container" class="space-y-10"></div>
+            <div class="mt-10 pt-6 border-t border-gray-200 flex justify-end">
+                <button type="button" onclick="submitQuiz()" id="btn-submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-200 flex items-center gap-2 opacity-50 cursor-not-allowed" disabled>
+                    Kumpulkan Jawaban
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center transition-all duration-500">
+        <div class="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Kuis Selesai!</h2>
+        <p class="text-gray-600 mb-6" id="result-identity">Nama (Kelas)</p>
+        <div class="bg-gray-50 rounded-xl p-6 border border-gray-100 mb-8">
+            <p class="text-sm text-gray-500 font-medium mb-1">Nilai Anda</p>
+            <div class="text-6xl font-black text-blue-600" id="final-score">0</div>
+            <p class="text-xs text-gray-400 mt-2">Kunci jawaban tidak ditampilkan.</p>
+        </div>
+        <button onclick="downloadPDF()" class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mb-3">
+            Download PDF untuk Classroom
+        </button>
+        <button onclick="location.reload()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors">
+            Kembali ke Awal
+        </button>
+    </div>
+
+    <div id="pdf-container" style="display: none;" class="w-[800px] max-w-full bg-white text-black p-10 mx-auto">
+        <div class="border-b-4 border-blue-800 pb-4 mb-6 text-center">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">HASIL KUIS</h1>
+            <h2 class="text-xl font-semibold text-gray-700">Struktur Data & Algoritma Standar</h2>
+            <p class="text-gray-500">Kelas 10 SMK</p>
+        </div>
+        <div class="mb-8 grid grid-cols-2 gap-4 border border-gray-300 p-6 rounded-lg bg-gray-50">
+            <div>
+                <p class="text-sm text-gray-500 font-bold mb-1">NAMA SISWA</p>
+                <p class="text-lg font-semibold text-gray-900" id="pdf-name">John Doe</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-bold mb-1">KELAS</p>
+                <p class="text-lg font-semibold text-gray-900" id="pdf-class">X Kulit A</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-bold mb-1">WAKTU PENGERJAAN</p>
+                <p class="text-lg font-semibold text-gray-900" id="pdf-date">01 Jan 2024, 10:00 WIB</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 font-bold mb-1">STATUS</p>
+                <p class="text-lg font-semibold text-green-600">SELESAI</p>
+            </div>
+        </div>
+        <div class="text-center py-10 border-2 border-dashed border-gray-300 rounded-xl mb-10">
+            <p class="text-2xl font-bold text-gray-600 mb-2">NILAI AKHIR</p>
+            <p class="text-8xl font-black text-blue-700" id="pdf-score">100</p>
+        </div>
+        <div class="text-center mt-12 text-sm text-gray-500">
+            <p>Dokumen ini dibuat otomatis oleh Sistem Kuis Interaktif.</p>
+            <p>Silakan unggah dokumen ini ke dalam tugas Google Classroom Anda.</p>
+        </div>
+    </div>
+
+    <div id="loading-overlay" class="fixed inset-0 bg-white/95 z-[9999] hidden flex-col items-center justify-center backdrop-blur-sm transition-all duration-300">
+        <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-5"></div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">Memproses Dokumen PDF...</h3>
+        <p class="text-gray-500 font-medium">Mohon tunggu sebentar.</p>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Perhatikan pernyataan berikut tentang ARRAY:<br><ol class='list-decimal ml-5 mt-2 mb-2'><li>Jumlah slotnya tetap (fixed)</li><li>Indeks selalu dimulai dari angka 1</li><li>Setiap data punya nomor atau indeks</li><li>Data disimpan secara berurutan</li></ol>Pernyataan yang BENAR tentang Array adalah...", options: { A: "1, 2, dan 3", B: "1, 3, dan 4", C: "2, 3, dan 4", D: "1, 2, dan 4" }, correct: "B" },
+            { q: "Perhatikan ilustrasi berikut!<br><br><span class='italic text-gray-600'>Di sebuah tumpukan piring bersih di kantin, penjual menaruh piring baru dari kardus ke atas tumpukan. Ketika ada pembeli, penjual mengambil piring paling atas untuk digunakan.</span><br><br>Ilustrasi di atas merupakan contoh dari struktur data...", options: { A: "Array", B: "Stack", C: "Queue", D: "List" }, correct: "B" },
+            { q: "Perhatikan ilustrasi berikut!<br><br>Di sebuah toko, ada 5 orang mengantri untuk membeli tiket konser:<br><ul class='list-disc ml-5 mt-2 mb-2'><li>Andi datang pertama → berdiri paling depan</li><li>Budi datang kedua → berdiri di belakang Andi</li><li>Caca datang ketiga → berdiri di belakang Budi</li><li>Dodi datang keempat → berdiri di belakang Caca</li><li>Eni datang kelima → berdiri di paling belakang</li></ul>Petugas tiket melayani Andi terlebih dahulu, kemudian Budi, lalu Caca, dan seterusnya.<br><br>Ilustrasi ini menunjukkan prinsip kerja dari struktur data...", options: { A: "Array, karena ada nomor urut", B: "Stack, karena yang terakhir dilayani", C: "Queue, karena yang pertama datang dilayani pertama", D: "List, karena bisa ditambah siapa saja" }, correct: "C" },
+            { q: "Perhatikan ciri-ciri struktur data berikut!<br><ul class='list-disc ml-5 mt-2 mb-2'><li>Ukurannya dapat berubah-ubah (tidak tetap)</li><li>Bisa menambah data di posisi mana saja</li><li>Bisa menghapus data di posisi mana saja</li><li>Bisa menyisipkan data di posisi mana saja</li></ul>Struktur data yang memiliki ciri-ciri di atas adalah...", options: { A: "Array", B: "Stack", C: "Queue", D: "List" }, correct: "D" },
+            { q: "Perhatikan kasus berikut!<br><br><span class='italic text-gray-600'>Rudi ingin mencari buku \"Matematika\" di perpustakaan yang memiliki 2.000 buku yang disusun secara acak (tidak berurutan). Rudi memutuskan untuk memeriksa buku satu per satu dari rak paling kiri sampai paling kanan sampai menemukan buku yang dicari.</span><br><br>Metode pencarian yang digunakan Rudi adalah...", options: { A: "Binary Search", B: "Bubble Search", C: "Linear Search", D: "Selection Search" }, correct: "C" },
+            { q: "Perhatikan kasus berikut!<br><br><span class='italic text-gray-600'>Siti ingin mencari kata \"Komputer\" di dalam kamus bergambar yang tebalnya 800 halaman dan sudah terurut dari A sampai Z. Siti membuka kamus di halaman tengah (halaman 400), ternyata di halaman 400 isinya huruf \"K\". Siti berpikir, kata \"Komputer\" dimulai dengan huruf \"K\", maka kemungkinan besar ada di sekitar sini. Kemudian Siti terus membagi halaman menjadi dua bagian sampai menemukan kata yang dicari.</span><br><br>Metode pencarian yang digunakan Siti adalah...", options: { A: "Linear Search, karena melihat satu per satu", B: "Binary Search, karena membagi data menjadi dua", C: "Bubble Search, karena menggelembung ke tengah", D: "Selection Search, karena memilih halaman tengah" }, correct: "B" },
+            { q: "Perhatikan data berikut: <strong>[5, 3, 8, 1, 6]</strong><br><br>Jika data di atas akan diurutkan menggunakan Bubble Sort dari yang terkecil ke terbesar, apa yang terjadi pada putaran pertama?", options: { A: "[1, 3, 5, 6, 8] → langsung terurut semua", B: "[3, 5, 1, 6, 8] → angka terbesar (8) berada di akhir", C: "[5, 3, 1, 6, 8] → angka 8 sudah di akhir", D: "[3, 5, 8, 1, 6] → tidak ada perubahan" }, correct: "B" },
+            { q: "Perhatikan langkah-langkah pengurutan berikut!<br>Data awal: [7, 4, 9, 2, 5]<br><ul class='list-none mt-2 mb-2 space-y-1'><li><strong>Langkah 1:</strong> Cari data terkecil (2), tukar dengan posisi pertama → [2, 4, 9, 7, 5]</li><li><strong>Langkah 2:</strong> Abaikan posisi pertama, cari terkecil dari sisa (4), sudah di posisi kedua → [2, 4, 9, 7, 5]</li><li><strong>Langkah 3:</strong> Abaikan posisi 1-2, cari terkecil dari sisa (5), tukar dengan posisi ketiga (9) → [2, 4, 5, 7, 9]</li><li><strong>Langkah 4:</strong> Abaikan posisi 1-3, cari terkecil dari sisa (7), sudah di tempat → [2, 4, 5, 7, 9]</li></ul>Metode pengurutan yang digunakan adalah...", options: { A: "Bubble Sort", B: "Binary Sort", C: "Selection Sort", D: "Linear Sort" }, correct: "C" },
+            { q: "Perhatikan pernyataan berikut!<br><ol class='list-decimal ml-5 mt-2 mb-2'><li>Stack menggunakan prinsip FIFO (First In First Out)</li><li>Queue menggunakan prinsip FIFO (First In First Out)</li><li>Stack menggunakan prinsip LIFO (Last In First Out)</li><li>Queue menggunakan prinsip LIFO (Last In First Out)</li></ol>Pernyataan yang BENAR adalah...", options: { A: "1 dan 3", B: "2 dan 3", C: "2 dan 4", D: "1 dan 4" }, correct: "B" },
+            { q: "Perhatikan ilustrasi berikut!<br><br>Di sebuah lemari es, Ibu menyimpan stok sayuran:<br><ul class='list-disc ml-5 mt-2 mb-2'><li>Hari Senin: beli wortel, taruh di rak paling bawah</li><li>Hari Selasa: beli bayam, taruh di rak tengah</li><li>Hari Rabu: beli kangkung, taruh di rak paling atas</li></ul>Ketika Ibu mau memasak, ia mengambil sayuran yang paling mudah dijangkau yaitu yang ada di rak paling atas.<br><br>Ilustrasi di atas memiliki kemiripan dengan konsep struktur data...", options: { A: "Array, karena sayuran disimpan di rak", B: "Stack, karena yang terakhir masuk diambil pertama", C: "Queue, karena sayuran diambil sesuai urutan beli", D: "List, karena sayuran bisa ditambah kapan saja" }, correct: "B" }
+        ];
+
+        let currentStudent = { name: '', class: '' };
+        let answeredQuestions = new Set();
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            quizData.forEach((q, index) => {
+                const qNum = index + 1;
+                let html = `
+                    <div class="bg-gray-50 rounded-xl p-5 md:p-6 border border-gray-200">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="bg-blue-100 text-blue-700 font-bold rounded-lg w-10 h-10 flex items-center justify-center shrink-0">
+                                ${qNum}
+                            </div>
+                            <div class="text-gray-800 font-medium leading-relaxed mt-1">${q.q}</div>
+                        </div>
+                        <div class="space-y-3 pl-0 md:pl-14">
+                `;
+                for (const [key, value] of Object.entries(q.options)) {
+                    html += `
+                        <label class="relative block cursor-pointer group">
+                            <input type="radio" name="q${index}" value="${key}" class="radio-custom sr-only" onchange="updateProgress(${index})">
+                            <div class="flex items-center gap-4 p-4 rounded-lg border-2 border-gray-200 bg-white group-hover:border-blue-300 transition-colors">
+                                <div class="circle w-5 h-5 rounded-full border-2 border-gray-300 relative shrink-0 transition-colors"></div>
+                                <span class="font-bold text-gray-500 w-5">${key}.</span>
+                                <span class="text-gray-700">${value}</span>
+                            </div>
+                        </label>
+                    `;
+                }
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function updateProgress(index) {
+            answeredQuestions.add(index);
+            const total = quizData.length;
+            const answered = answeredQuestions.size;
+            document.getElementById('progress-text').innerText = `${answered} / ${total} Terjawab`;
+            const btnSubmit = document.getElementById('btn-submit');
+            if (answered === total) {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnSubmit.classList.add('animate-pulse');
+                setTimeout(() => btnSubmit.classList.remove('animate-pulse'), 1000);
+            }
+        }
+
+        function startQuiz(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('studentName').value.trim();
+            const classInput = document.getElementById('studentClass').value;
+            if (nameInput && classInput) {
+                currentStudent.name = nameInput;
+                currentStudent.class = classInput;
+                document.getElementById('quiz-identity-display').innerText = `${nameInput} - ${classInput}`;
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                renderQuestions();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function submitQuiz() {
+            if (answeredQuestions.size < quizData.length) {
+                alert("Harap jawab semua pertanyaan terlebih dahulu.");
+                return;
+            }
+            let score = 0;
+            quizData.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selected && selected.value === q.correct) score += 10;
+            });
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('result-identity').innerText = `${currentStudent.name} (${currentStudent.class})`;
+            animateValue("final-score", 0, score, 1500);
+            document.getElementById('pdf-name').innerText = currentStudent.name;
+            document.getElementById('pdf-class').innerText = currentStudent.class;
+            document.getElementById('pdf-score').innerText = score;
+            const now = new Date();
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('pdf-date').innerText = now.toLocaleDateString('id-ID', options) + ' WIB';
+            window.scrollTo(0, 0);
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function downloadPDF() {
+            const pdfContainer = document.getElementById('pdf-container');
+            const resultScreen = document.getElementById('result-screen');
+            const overlay = document.getElementById('loading-overlay');
+            const fileName = `Nilai_Kuis_${currentStudent.class.replace(/\s+/g, '_')}_${currentStudent.name.replace(/\s+/g, '_')}.pdf`;
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: fileName,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            resultScreen.classList.add('hidden');
+            pdfContainer.style.display = 'block';
+            setTimeout(() => {
+                html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                    pdfContainer.style.display = 'none';
+                    resultScreen.classList.remove('hidden');
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                }).catch(err => {
+                    console.error("PDF generation failed:", err);
+                    pdfContainer.style.display = 'none';
+                    resultScreen.classList.remove('hidden');
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    alert("Gagal membuat PDF. Silakan coba lagi.");
+                });
+            }, 500);
+        }
+
+        window.startQuiz = startQuiz;
+        window.updateProgress = updateProgress;
+        window.submitQuiz = submitQuiz;
+        window.downloadPDF = downloadPDF;
+    </script>
+</body>
+</html>
+    </template>
+
+    <!-- ===== SCRIPT TO LOAD IFRAMES ===== -->
+    <script>
+        (function() {
+            ['game', 'lkpd', 'quiz'].forEach(function(name) {
+                var tpl = document.getElementById('tpl-' + name);
+                var iframe = document.getElementById('iframe-' + name);
+                if (tpl && iframe) {
+                    iframe.srcdoc = '<!DOCTYPE html>' + tpl.innerHTML;
+                }
+            });
+
+            // Tab switching
+            var tabs = document.querySelectorAll('.main-tab');
+            var pages = document.querySelectorAll('.page');
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    var target = tab.dataset.page;
+                    tabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
+                    pages.forEach(function(p) { p.classList.toggle('active', p.id === 'page-' + target); });
+                });
+            });
+
+            console.log('✅ Media Pembelajaran Gabungan siap!');
+            console.log('📚 3 Halaman: Media Pembelajaran (8 topik) | LKPD | Kuis');
+        })();
+    </script>
+</body>
+</html>
